@@ -1,4 +1,4 @@
-# cfac - Code for Aachen
+# cfac - Code for Aachen - Real-time APIs for Aachen
 
 _cfac_ is a Go package for accessing various real-time data sources and APIs in the [city of Aachen](https://aachen.de/).
 
