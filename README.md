@@ -1,5 +1,12 @@
 # cfac - Code for Aachen - Real-time APIs for Aachen
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/stv0g/cfac.svg)](https://pkg.go.dev/github.com/stv0g/cfac)
+![](https://img.shields.io/snyk/vulnerabilities/github/stv0g/cfac)
+[![](https://img.shields.io/github/checks-status/stv0g/cfac/master)](https://github.com/stv0g/cfac/actions)
+[![](https://img.shields.io/librariesio/release/stv0g/cfac)](https://libraries.io/github/stv0g/cfac)
+[![GitHub](https://img.shields.io/github/license/stv0g/cfac)](https://github.com/stv0g/cfac/blob/master/LICENSE)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/stv0g/cfac)
+
 _cfac_ is a Go package for accessing various real-time data sources and APIs in the [city of Aachen](https://aachen.de/).
 
 ## Disclaimer
