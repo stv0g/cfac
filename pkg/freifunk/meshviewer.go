@@ -1,16 +1,93 @@
 package freifunk
 
+import "time"
+
 // See https://data.aachen.freifunk.net/
 
-// https://data.aachen.freifunk.net/nodes.json
+const (
+	Url = "https://data.aachen.freifunk.net/"
 
-// curl 'https://data.aachen.freifunk.net/meshviewer.json' \
-//   -H 'sec-ch-ua: "Chromium";v="93", " Not;A Brand";v="99"' \
-//   -H 'Referer: https://map.aachen.freifunk.net/' \
-//   -H 'sec-ch-ua-mobile: ?0' \
-//   -H 'User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36' \
-//   -H 'sec-ch-ua-platform: "Linux"' \
-//   --compressed
+	UrlNodelist          = Url + "/nodelist.json"
+	UrlNodes             = Url + "/nodes.json"
+	UrlGraph             = Url + "/graph.json"
+	UrlMeshviewer        = Url + "/meshviewer.json"
+	UrlDistricStatistics = Url + "/ffac-district-statistics.json"
+)
+
+type ResponseNodes struct {
+	Version   int    `json:"version"`
+	Timestamp string `json:"timestamp"`
+	Nodes     []Node `json:"nodes"`
+}
+
+type ResponseNodeList struct {
+	Version   string         `json:"version"`
+	UpdatedAt string         `json:"updated_at"`
+	Nodes     []NodeNodelist `json:"nodes"`
+}
+
+type ResponseMeshviewer struct {
+	Timestamp string           `json:"timestamp"`
+	Nodes     []NodeMeshviewer `json:"nodes"`
+	Links     []Link           `json:"links"`
+}
+
+type ResponseGraph struct {
+	Version int `json:"version"`
+	Batadv  struct {
+		Directed bool        `json:"directed"`
+		Graph    interface{} `json:"graph"`
+		Nodes    []struct {
+			ID     string `json:"id"`
+			NodeID string `json:"node_id"`
+		} `json:"nodes"`
+		Links []struct {
+			Source   int  `json:"source"`
+			Target   int  `json:"target"`
+			Vpn      bool `json:"vpn"`
+			Tq       int  `json:"tq"`
+			Bidirect bool `json:"bidirect"`
+		} `json:"links"`
+	} `json:"batadv"`
+}
+
+type ResponseDistricStatistics struct {
+	Counts struct {
+		KnownWithinBoundary  int `json:"known_within_boundary"`
+		OnlineWithinBoundary int `json:"online_within_boundary"`
+		WithGeo              int `json:"with_geo"`
+		WithoutGeo           int `json:"without_geo"`
+	} `json:"counts"`
+	Districts struct {
+		Known  map[string]int `json:"known"`
+		Online map[string]int `json:"online"`
+	} `json:"districts"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
+type NodeNodelist struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Status struct {
+		Online      bool   `json:"online"`
+		Lastcontact string `json:"lastcontact"`
+		Clients     int    `json:"clients"`
+	} `json:"status"`
+	Position struct {
+		Lat  float64 `json:"lat"`
+		Long float64 `json:"long"`
+	} `json:"position,omitempty"`
+}
+
+type Link struct {
+	Type       string  `json:"type"`
+	Source     string  `json:"source"`
+	Target     string  `json:"target"`
+	SourceTq   float64 `json:"source_tq"`
+	TargetTq   float64 `json:"target_tq"`
+	SourceAddr string  `json:"source_addr"`
+	TargetAddr string  `json:"target_addr"`
+}
 
 type NodeFlags struct {
 	Online  bool `json:"online"`
@@ -145,8 +222,41 @@ type Node struct {
 	Nodeinfo   NodeInfo       `json:"nodeinfo"`
 }
 
-type Nodes struct {
-	Version   int    `json:"version"`
-	Timestamp string `json:"timestamp"`
-	Nodes     []Node `json:"nodes"`
+type Location struct {
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+}
+
+type NodeMeshviewer struct {
+	Firstseen      string   `json:"firstseen"`
+	Lastseen       string   `json:"lastseen"`
+	IsOnline       bool     `json:"is_online"`
+	IsGateway      bool     `json:"is_gateway"`
+	Clients        int      `json:"clients"`
+	ClientsWifi24  int      `json:"clients_wifi24"`
+	ClientsWifi5   int      `json:"clients_wifi5"`
+	ClientsOther   int      `json:"clients_other"`
+	RootfsUsage    float64  `json:"rootfs_usage"`
+	Loadavg        int      `json:"loadavg"`
+	MemoryUsage    float64  `json:"memory_usage"`
+	Uptime         string   `json:"uptime"`
+	GatewayNexthop string   `json:"gateway_nexthop,omitempty"`
+	Gateway        string   `json:"gateway,omitempty"`
+	Gateway6       string   `json:"gateway6,omitempty"`
+	NodeID         string   `json:"node_id"`
+	Mac            string   `json:"mac"`
+	Addresses      []string `json:"addresses"`
+	Domain         string   `json:"domain"`
+	Hostname       string   `json:"hostname"`
+	Firmware       struct {
+		Base    string `json:"base"`
+		Release string `json:"release"`
+	} `json:"firmware"`
+	Autoupdater struct {
+		Enabled bool   `json:"enabled"`
+		Branch  string `json:"branch"`
+	} `json:"autoupdater"`
+	Nproc    int      `json:"nproc"`
+	Model    string   `json:"model,omitempty"`
+	Location Location `json:"location,omitempty"`
 }
