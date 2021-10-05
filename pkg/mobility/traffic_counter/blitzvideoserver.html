@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html><head>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+<!--
+	<script src="/jquery/jquery-3.3.1.min.js"></script> 
+	<script src="/clappr/clappr.min.0.2.98.js"></script>
+	<script src="/clappr/level-selector.js"></script>
+-->
+	<script src="/jq_cl_clplug.js" ></script>
+</head>
+<body style="margin:0; padding:0; text-align:center; height:100%; overflow: hidden; overflow-y: hidden; overflow-x: hidden;">
+	
+<div id="videodiv" style="height: 100%; position: absolute;" ></div>
+<script type="text/javascript">
+
+	function seitenrefresh() { //wird unten als Interval gestartet
+		bisherigeURL = document.location.href
+		bisherigeURL = bisherigeURL.replace("autostart", "a") + "&autostart=-1"
+
+		kameras_array = ["10101177229408133883.stream", "10106536228971876362.stream", "10103287116870350276.stream", "10104283708959275360.stream", "10104651371402715393.stream", "10104090994002355331.stream", "10107970957385344271.stream", "10107214380814438907.stream", "10107745610657410197.stream", "10107886632285296527.stream", "10108046086083628416.stream", "10108083001873213449.stream"]
+
+		for (var i=0; i<kameras_array.length; i++) {
+			if (streamnameHLS.indexOf(kameras_array[i]) != -1){
+				return
+			} 
+		}
+		document.location.href = bisherigeURL
+	}
+
+	function trace(s) {
+		try { console.log(s) } catch (e) {
+			//die console ist nicht verfügbar im IE8 wenn die Developer Tools nicht offen sind. Dies führt zu einem Scriptabbruch!
+		}
+	}
+
+	function getParam(variable) {  
+		var query = window.location.search.substring(1);  
+		var vars = query.split("&");  
+		for (var i=0;i<vars.length;i++) {  
+			var pair = vars[i].split("=");  
+			if(pair[0] == variable){return pair[1];}  
+		}
+		return("");  
+	}
+	
+	function slashAmAnfangEntfernen(derString) {
+		if (derString.slice(0, 1) == "/") derString = derString.slice(1);
+		if (derString.slice(0, 3) == "%2F") derString = derString.slice(3);
+		return derString;
+	}
+	
+	serverip = getParam("serverip");
+	serverapp = getParam("serverapp");
+	hlshttpsdomain = getParam("hlshttpsdomain");
+	streamname = getParam("streamname");
+	streamAudio = getParam("streamAudio");
+	stream240p = getParam("stream240p");
+	stream360p = getParam("stream360p");
+	stream480p = getParam("stream480p");
+	stream720p = getParam("stream720p");
+	stream1080p = getParam("stream1080p");
+	smil = getParam("smil");
+	playerbreite = getParam("playerbreite");
+	playerhoehe = getParam("playerhoehe");
+	live = getParam("live");
+	adMode = getParam("adMode");
+	hdswitcher = getParam("hdswitcher");
+	videostartoffset = getParam("videostartoffset");
+	videostopoffset = getParam("videostopoffset");
+	sprachedeutschenglisch = getParam("sprachedeutschenglisch");
+	videobuffer = getParam("videobuffer"); //Wert in Sekunden. Standard: 2
+	keinflash = getParam("keinflash"); //Kann auf 1 gesetzt werden um den Flashplayer zu deaktivieren.
+	startqualitaet = getParam("startqualitaet"); //z.B. "360p"
+	ohneplayerleiste = getParam("ohneplayerleiste"); //Kann auf 1 gesetzt werden = keine Playerleiste / Spulleiste
+	playsinline = getParam("playsinline"); //Kann auf 1 gesetzt werden = Video startet ohne Fullscreen unter iOS, ...
+	if (typeof(startqualitaet) == "undefined" || startqualitaet == "") startqualitaet = getParam("hdstartqualitaet");
+	dvr = getParam("dvr");
+	loop = getParam("loop");
+	secureid = getParam("id");
+	if (typeof(secureid) == "undefined" || secureid == "") secureid = getParam("secureid");
+	
+	autostart = getParam("autostart");
+	playerlayout = getParam("playerlayout");
+	playerAnzeigenEnglisch = getParam("playerAnzeigenEnglisch"); //Sprache von Playerstatusmeldungen: Standard = DE, "1" = Englisch
+	playbutton = getParam("playbutton"); 					//Beispiel: "http://domain.de/grafik.png"
+	bgimage = getParam("bgimage"); 							//Beispiel: "http://domain.de/grafik.jpg";
+	logoimageObenLinks = getParam("logoimageObenLinks"); 	//Beispiel: "http://domain.de/grafik.jpg";
+	logoimageObenRechts = getParam("logoimageObenRechts"); 	//Beispiel: "http://domain.de/grafik.jpg";
+	logoimageUnterLinks = getParam("logoimageUnterLinks"); 	//Beispiel: "http://domain.de/grafik.jpg";
+	logoimageUntenRechts = getParam("logoimageUntenRechts");//Beispiel: "http://domain.de/grafik.jpg";
+	startbildvonsekunde = getParam("startbildvonsekunde");
+	bgcolor = getParam("backgroundcolor");					//Parameter backgroundcolor entspricht einem sechsstelligen Hexwert ohne Raute oder "0x" am Anfang
+	if (typeof(bgcolor) == "undefined" || bgcolor == "") bgcolor = getParam("bgcolor");
+	timelinecolor = getParam("timelinecolor");			//Parameter timelinecolor entspricht einem sechsstelligen Hexwert ohne Raute oder "0x" am Anfang
+	livestreamNichtErreichbarAnzeigen = getParam("livestreamNichtErreichbarAnzeigen"); //Standard = "1"; Wenn kein livestream läuft wird dies mit einer Einblendung angezeigt. "0" verhindert die Einblendung.
+	medialeisteNichtAusblenden = getParam("medialeisteNichtAusblenden");
+	playerTimeout = getParam("playerTimeout");
+	
+	// Vorspann und Abspann entsprechen einer Playlist!
+	//   (Vor und nach dem Hauptfilm wird der Vorspann und der Abspann jeweils als separates Video abgespielt.)
+	// Preroll und Postroll entsprechen dem Zusammenschneiden mit dem Hauptfilm zu einem einzigen Clip (nur eine Spulleiste).
+	//   Dies funktioniert nur im Flashplayer. In HTML basierten Playern arbeitet eine Pre- und Postroll identisch zu Vor- und Abspann.
+	// Eine Kombination von Vor-/Abspann und Pre-/Postroll ist nicht vorgesehen!
+	vorspann = getParam("vorspann");						// Beispiel: "rtmp://62.113.210.7/x-vod/beispiel.mp4";
+	abspann = getParam("abspann");							// Beispiel: "rtmp://62.113.210.7/x-vod/beispiel.mp4";
+	preroll = getParam("preroll");							// Beispiel: "beispiel.mp4";
+	postroll = getParam("postroll");						// Beispiel: "beispiel.mp4";
+	
+	
+	
+	if (playerlayout == "") playerlayout = 2;
+	if (videobuffer == "") videobuffer = 3;
+
+	if (live == true || live == "1") {
+		 live = 1;
+	} else {
+		 live = 0;
+	}
+	if (adMode == true || adMode == "1") {
+		 adMode = 1;
+	} else {
+		 adMode = 0;
+	}
+	if (livestreamNichtErreichbarAnzeigen == true || livestreamNichtErreichbarAnzeigen == "1" || livestreamNichtErreichbarAnzeigen == "") {
+		 livestreamNichtErreichbarAnzeigen = 1;
+	} else {
+		 livestreamNichtErreichbarAnzeigen = 0;
+	}
+	
+
+	switch(autostart) {
+		case "-1":
+			trace("Autostart per FORCE Parameter NICHT aktiv.")
+			autostart = 0
+			break
+		case (false || "0"):
+			trace("Autostart per Parameter NICHT aktiv. Wird jedoch überschrieben zu: aktiv")
+			autostart = 0;
+		break;
+		case "":
+			trace("Autostart per Standard aktiv. (Manche Browser führen diesen aber ggf. nicht aus.)")
+		autostart = 1;
+		break;
+		case "1":
+			trace("Autostart per Parameter aktiv. (Manche Browser führen diesen aber ggf. nicht aus.)")
+			autostart = 1;
+		break;
+		default:
+	}
+
+
+	if (videostartoffset >= 1) {
+		 videostartoffset = videostartoffset;
+	} else {
+		 videostartoffset = 0;
+	}
+	if (videostopoffset >= 1) {
+		 videostopoffset = videostopoffset;
+	} else {
+		 videostopoffset = "";
+	}
+	
+	if (typeof(startbildvonsekunde) == "undefined" || startbildvonsekunde == "") startbildvonsekunde = 2;
+	
+	if (typeof(bgcolor) != "undefined" && bgcolor != "") {
+		document.body.style.backgroundColor = "#"+bgcolor;
+	} else {
+		bgcolor = "000000";
+		document.body.style.backgroundColor = "#"+bgcolor;
+	}
+	
+	
+	if (hdswitcher == true || hdswitcher == "1") {
+		hdswitcher = 1;
+		if (streamname.length >0) {
+			if (streamname.indexOf("_handy.mp4") >= 0) streamname = streamname.slice(0, streamname.indexOf("_handy.mp4"));
+			if (streamname.indexOf("_240p.mp4") >= 0) streamname = streamname.slice(0, streamname.indexOf("_240p.mp4"));
+			if (streamname.indexOf("_360p.mp4") >= 0) streamname = streamname.slice(0, streamname.indexOf("_360p.mp4"));
+			if (streamname.indexOf("_480p.mp4") >= 0) streamname = streamname.slice(0, streamname.indexOf("_480p.mp4"));
+			if (streamname.indexOf("_720p.mp4") >= 0) streamname = streamname.slice(0, streamname.indexOf("_720p.mp4"));
+			if (streamname.length >0) {
+				stream240p = streamname + "_handy.mp4"
+				stream360p = streamname + "_360p.mp4"
+				stream480p = streamname + "_480p.mp4"
+				stream720p = streamname + "_720p.mp4"
+				streamname = "";
+				hdswitcher = 0;
+			}
+		}
+	} else {
+		hdswitcher = 0;
+	}
+
+	
+	smil = slashAmAnfangEntfernen(smil);
+	streamname = slashAmAnfangEntfernen(streamname);
+	streamAudio = slashAmAnfangEntfernen(streamAudio);
+	stream240p = slashAmAnfangEntfernen(stream240p);
+	stream360p = slashAmAnfangEntfernen(stream360p);
+	stream480p = slashAmAnfangEntfernen(stream480p);
+	stream720p = slashAmAnfangEntfernen(stream720p);
+	stream1080p  = slashAmAnfangEntfernen(stream1080p);
+	
+	streamnameHLS = streamname;
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") streamnameHLS = stream480p;
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") streamnameHLS = stream360p;
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") streamnameHLS = stream720p;
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") streamnameHLS = stream1080p;
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") streamnameHLS = stream240p;
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") streamnameHLS = streamAudio;
+	
+	if (typeof(streamnameHLS) == "undefined" || streamnameHLS == "") {
+		if (typeof (smil) != "undefined" && smil != "") {	//Falls kein Stream angegeben wurde, sondern nur eine SMIL-Datei:
+			keinflash = 1;
+			//streamnameHLS = "smil:" + smil;
+		}
+	} 
+	
+	
+	
+	
+	
+	
+
+	
+
+	
+	rtmpadresse = "rtmp://"+serverip+"/"+serverapp+"/";
+	rtspadresse = "rtsp://"+serverip+":554/"+serverapp+"/";
+	httpstreamingadresse = "http://"+serverip+"/"+serverapp+"/_definst_/";
+	
+	if (window.location.protocol == "https:") {
+		if (serverip == "62.113.210.2") hlshttpsdomain = "586c58b20c86e.streamlock.net";
+		if (serverip == "62.113.210.3") hlshttpsdomain = "5857db5306b83.streamlock.net";
+		if (serverip == "62.113.210.5") hlshttpsdomain = "5852afe96c9bb.streamlock.net";
+		if (serverip == "62.113.210.6") hlshttpsdomain = "586af19f15937.streamlock.net";
+		if (serverip == "62.113.210.7") hlshttpsdomain = "58481b709ae2e.streamlock.net";
+		if (serverip == "62.113.210.8") hlshttpsdomain = "579a262523960.streamlock.net";
+		if (serverip == "62.113.210.9") hlshttpsdomain = "5856e1a25f71a.streamlock.net";
+		//if (serverip == "62.113.210.159") hlshttpsdomain = "58af0c57eaf3e.streamlock.net";
+		if (serverip == "62.113.210.157") hlshttpsdomain = "58481b709ae2e.streamlock.net";
+		if (serverip == "62.113.210.159") hlshttpsdomain = "58481b709ae2e.streamlock.net";
+		if (serverip == "62.113.210.240") hlshttpsdomain = "578d8e1867e87.streamlock.net";
+		if (serverip == "62.113.210.250") hlshttpsdomain = "58bd5b7a98e04.streamlock.net";
+		if (serverip == "62.113.210.252") hlshttpsdomain = "5889e7d0d6e28.streamlock.net";
+		if (serverip == "62.113.221.2") hlshttpsdomain = "58bfa1dbf102c.streamlock.net";
+		if (serverip == "62.113.221.3") hlshttpsdomain = "5857499ee635b.streamlock.net";
+		//if (serverip == "62.113.221.4") hlshttpsdomain = "5864df9ceac85.streamlock.net";
+		if (serverip == "62.113.221.4") hlshttpsdomain = "58481b709ae2e.streamlock.net";
+
+		if (serverip == "62.113.221.5") hlshttpsdomain = "58666775583d1.streamlock.net";
+		if (serverip == "62.113.221.6") hlshttpsdomain = "586fb512206e4.streamlock.net";
+		if (serverip == "62.113.221.7") hlshttpsdomain = "583548fa0d82b.streamlock.net";
+		if (serverip == "62.113.221.8") hlshttpsdomain = "57a1a332778cd.streamlock.net";
+		if (serverip == "62.113.221.14") hlshttpsdomain = "57a1a332778cd.streamlock.net";
+		if (serverip == "62.113.221.100") hlshttpsdomain = "58e5fdd27293a.streamlock.net";
+		if (serverip.indexOf(".streamlock.net") >0) hlshttpsdomain = serverip;
+	}
+
+	if (typeof(hlshttpsdomain) != "undefined" && hlshttpsdomain != "") {
+		httpstreamingadresse = "https://"+hlshttpsdomain+"/"+serverapp+"/_definst_/";
+	}
+	
+
+	var aktuelleVideobreite = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+	var aktuelleVideohoehe = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+	
+	if (typeof(playerhoehe) != "undefined" && playerhoehe != ""  && aktuelleVideohoehe > playerhoehe ) {
+		aktuelleVideohoehe = playerhoehe;
+	} 
+	if (typeof(playerbreite) != "undefined" && playerbreite != "" &&  aktuelleVideobreite > playerbreite ) {
+		aktuelleVideobreite = playerbreite;
+	} 
+	
+	if (typeof(playerTimeout) != "undefined" && playerTimeout != "") {
+		playerneustartInterval = setInterval(playerneustart, playerTimeout*1000);
+	}
+	
+	
+	
+	
+	var flashVorhanden = false;
+	try {
+		//IE
+		if (new ActiveXObject('ShockwaveFlash.ShockwaveFlash')) flashVorhanden = true;
+	} catch (e) {
+		//FF, Chrome, Safari, ...
+		if (navigator.mimeTypes && navigator.mimeTypes['application/x-shockwave-flash'] != undefined && navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin) {
+			flashVorhanden = true;
+			//trace("aktiv: navigator.mimeTypes['application/x-shockwave-flash'] && navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin");
+		} else {
+			//trace("nicht aktiv: navigator.mimeTypes || enabledPlugin");
+		}
+		if (navigator.plugins && navigator.plugins.length) {
+			var plugin = navigator.plugins['Shockwave Flash'];
+			if (plugin) {
+				flashVorhanden = true;
+				//trace("aktiv: navigator.plugins['Shockwave Flash']");
+			} else {
+				//trace("nicht aktiv: navigator.plugins['Shockwave Flash']");
+			}
+		} else {
+			//trace("nicht aktiv: navigator.plugins");
+		}
+	}
+	if (navigator.userAgent.match(/(iPhone|iPod|iPad|blackberry|BB10|android|Kindle|htc|lg|midp|mmp|mobile|nokia|opera mini|palm|pocket|psp|sgh|smartphone|symbian|treo mini|Playstation Portable|SonyEricsson|Samsung|MobileExplorer|PalmSource|Benq|Windows Phone|Windows Mobile|IEMobile|Windows CE|Nintendo Wii)/i)) {
+		flashVorhanden = false; //Überschreiben, obwohl z.B. ein Android möglicherweise einen Flashplayer installiert hat
+		mobilgeraet = true;
+	} else {
+		mobilgeraet = false;
+	}
+	nativenHlsPlayerVerwenden = false;
+	
+	if (navigator.userAgent.match(/(iPhone|iPod|iPad|BlackBerry|BB10)/i) && navigator.userAgent.match(/(android)/i) == null  ) {
+		flashVorhanden = false; //Überschreiben, obwohl z.B. ein Android möglicherweise einen Flashplayer installiert hat
+//nativenHlsPlayerVerwenden = true;
+	} else { 
+		nativenHlsPlayerVerwenden = false;
+	}
+	//trace("nativenHlsPlayerVerwenden: "+nativenHlsPlayerVerwenden)
+
+	if (typeof(keinflash) != "undefined" && keinflash == "1") flashVorhanden = false;
+
+	
+	
+	
+	
+	
+	
+	//https://www.blitzvideoserver.de/player_strassennrw.html?serverip=62.113.210.7&serverapp=strassennrw-rtplive&live=1&streamname=16421818321065669422
+	if (serverapp == "strassennrw-rtplive") {
+		flashVorhanden = false;
+			
+			
+
+		//trace("Kamera startet");
+		var overlaygrafik = "strassennrw/kamera-verbinden.png"
+		if (streamname.slice(0, 4) == "1010") {
+			trace("Kamera neue Generation");
+			streamnameStandbild = "https://www.verkehr.nrw/webcams/"+ (streamname.slice(0, 8) + "6" + streamname.slice(9)) +".jpg";
+			streamnameStandbild = "https://www.verkehr.nrw/webcams/"+ streamname +".jpg";
+			document.getElementById('videodiv').innerHTML = '<img style="width:100%; height:100%; max-height: 240px;" src="'+overlaygrafik+'">';
+			$('#videodiv').css("background-image", "url("+streamnameStandbild+")");
+			$('#videodiv').css("background-color", "#fff");
+		} else {
+			streamnameStandbild = "https://mvp.avinotec.de/pepimage/"+streamname+".jpg";
+			document.getElementById('videodiv').innerHTML = '<img style="width:100%; height:100%; max-height: 240px;" src="'+overlaygrafik+'">'; 
+			$('#videodiv').html = '<img style="width:100%; height:100%; max-height: 240px;" src="'+streamnameStandbild+'">'; 
+			$('#videodiv').css("background-image", "url("+streamnameStandbild+")");
+			$('#videodiv').css("background-color", "#fff");
+		}
+		bgimage = streamnameStandbild;
+		timeoutZeit = 3000;
+		$.ajax({ url: "strassennrw/kameraaufruf.php",
+			data: {kameraid: streamname, zufall: Math.random()},
+			datatype: "html",
+			type: "GET",
+			cache: false,
+			timeout: timeoutZeit,
+			success: function(data) {
+				console.log("Kameraaufruf ausgeführt. Ergebnis: "+data);
+				bgimage = streamnameStandbild;
+				streamname = streamname + ".stream";	//beide setzen
+				streamnameHLS = streamname;				//beide setzen
+				if (data.indexOf("FEHLER KAMERA")>= 0) {
+					 console.log("Stream inaktiv ("+data+")");
+					 document.getElementById('videodiv').innerHTML = "<h3 style='color: #fff; font-family: Arial; margin-top: 2px; margin-bottom: 0;'>Stream inaktiv</h3><p style='color: #fff; font-size: 12px; font-family: arial; margin-top:0px;'>"+data+"</p><img style='opacity: 0.7; -webkit-filter: blur(4px); filter: blur(4px);' src='"+bgimage+"'>";
+					 return;
+				} else {
+					if (data.indexOf("bereits aktiv") >=0) {
+						 playerstart()
+					} else {
+						if (mobilgeraet == true) {
+							setTimeout(function(){ playerstart(); }, 5000);
+						} else {
+							setTimeout(function(){ playerstart(); }, 4000);
+						}
+					}
+				}
+				 
+			},
+			error: function(){
+				playerstart();
+			}
+
+			
+		});
+		   
+		
+	} else {
+		playerstart();
+	}
+
+
+
+
+	function playerstart() {	
+		playercode = "";
+		if (flashVorhanden) {
+			//trace("Browserweiche: Flashplayer");
+	        httpstreamingadresse = "";
+	        if (typeof(streamname) != "undefined" && streamname != "") httpstreamingadresse += "&videofile1=" + rtmpadresse + streamname;
+	        if (typeof(streamAudio) != "undefined" && streamAudio != "") httpstreamingadresse += "&streamAudio=" + rtmpadresse + streamAudio;
+	        if (typeof(stream240p) != "undefined" && stream240p != "") httpstreamingadresse += "&stream240p=" + rtmpadresse + stream240p;
+			if (typeof(stream360p) != "undefined" && stream360p != "") httpstreamingadresse += "&stream360p=" + rtmpadresse + stream360p;
+			if (typeof(stream480p) != "undefined" && stream480p != "") httpstreamingadresse += "&stream480p=" + rtmpadresse + stream480p;
+			if (typeof(stream720p) != "undefined" && stream720p != "") httpstreamingadresse += "&stream720p=" + rtmpadresse + stream720p;
+			if (typeof(stream1080p) != "undefined" && stream1080p != "") httpstreamingadresse += "&stream1080p=" + rtmpadresse + stream1080p; 
+			  
+			if (typeof(secureid) != "undefined" && secureid != "") httpstreamingadresse += "&id=" + secureid;   
+			if (typeof(autostart) != "undefined" && autostart != "") httpstreamingadresse += "&autostart=" + autostart;
+			if (typeof(playerlayout) != "undefined" && playerlayout != "") httpstreamingadresse += "&playerlayout=" + playerlayout;
+			if (typeof(playerAnzeigenEnglisch) != "undefined" && playerAnzeigenEnglisch != "") httpstreamingadresse += "&english=" + playerAnzeigenEnglisch;
+					
+			if (typeof(playbutton) != "undefined" && playbutton != "") httpstreamingadresse += "&playbutton=" + playbutton;
+			if (typeof(bgimage) != "undefined" && bgimage != "") httpstreamingadresse += "&bgimage=" + bgimage;
+			if (typeof(timelinecolor) != "undefined" && timelinecolor != "") httpstreamingadresse += "&timelinecolor=" + timelinecolor;
+			if (typeof(loop) != "undefined" && loop != "") httpstreamingadresse += "&auto_repeat_all=100";
+			
+			if (typeof(logoimageObenLinks) != "undefined" && logoimageObenLinks != "") httpstreamingadresse += "&logoimageObenLinks=" + logoimageObenLinks;		
+			if (typeof(logoimageObenRechts) != "undefined" && logoimageObenRechts != "") httpstreamingadresse += "&logoimageObenRechts=" + logoimageObenRechts;		
+			if (typeof(logoimageUnterLinks) != "undefined" && logoimageUnterLinks != "") httpstreamingadresse += "&logoimageUnterLinks=" + logoimageUnterLinks;		
+			if (typeof(logoimageUntenRechts) != "undefined" && logoimageUntenRechts != "") httpstreamingadresse += "&logoimageUntenRechts=" + logoimageUntenRechts;	
+			if (typeof(vorspann) != "undefined" && vorspann != "") httpstreamingadresse += "&vorspann=" + vorspann;
+			if (typeof(abspann) != "undefined" && abspann != "") httpstreamingadresse += "&abspann=" + abspann;
+			if (typeof(preroll) != "undefined" && preroll != "") httpstreamingadresse += "&preroll=" + preroll;
+			if (typeof(postroll) != "undefined" && postroll != "") httpstreamingadresse += "&postroll=" + postroll;
+			
+			if (typeof(videostartoffset) != "undefined" && videostartoffset != "") {
+				if (typeof(vorspann) != "undefined" && vorspann != "") {
+					httpstreamingadresse += "&videostartoffset2=" + videostartoffset; 
+				} else {
+					httpstreamingadresse += "&videostartoffset1=" + videostartoffset; 
+				}
+			}
+			if (typeof(videostopoffset) != "undefined" && videostopoffset != "") {
+				if (typeof(vorspann) != "undefined" && vorspann != "") {
+					httpstreamingadresse += "&videostopoffset2=" + videostopoffset; 
+				} else {
+					httpstreamingadresse += "&videostopoffset1=" + videostopoffset; 
+				}
+			}
+			
+			
+			if (typeof(ohneplayerleiste) != "undefined" && ohneplayerleiste == 1) httpstreamingadresse += "&playerposy=10000";
+			
+			if (typeof(startqualitaet) != "undefined" && startqualitaet != "") httpstreamingadresse += "&hdstartqualitaet=" + startqualitaet;
+			if (typeof(videobuffer) != "undefined" && videobuffer != "") httpstreamingadresse += "&videobuffer="+videobuffer;
+			if (typeof(sprachedeutschenglisch) != "undefined" && sprachedeutschenglisch != "") httpstreamingadresse += "&sprachedeutschenglisch="+sprachedeutschenglisch;
+			if (typeof(bgcolor) != "undefined" && bgcolor != "") {
+				httpstreamingadresse += "&bgc=" + bgcolor; 
+			} else {
+				httpstreamingadresse += "&bgc=" + "000000"; 
+			}
+			
+			
+			
+			//if (serverapp.indexOf("kunde")>=0) httpstreamingadresse += "&keinfullscreen=1";
+			
+			httpstreamingadresse += "&livestreamNichtErreichbarAnzeigen=" + livestreamNichtErreichbarAnzeigen;
+			httpstreamingadresse += "&hdswitcher=" + hdswitcher;
+			httpstreamingadresse += "&live=" + live;
+			httpstreamingadresse += "&adMode=" + adMode;
+			httpstreamingadresse += "&startbildvonsekunde=" + startbildvonsekunde;
+			httpstreamingadresse += "&leer=0";
+	
+			if (window.location.protocol == "https:") {
+				httpProt = "https";
+			} else {
+				httpProt = "http";
+			}
+			
+			playercode = "<object id='flashvideoid' classid='CLSID:D27CDB6E-AE6D-11cf-96B8-444553540000' width='100%' height='100%'>";
+			playercode += "<param name='movie' value='"+httpProt+"://www.blitzvideoserver.de/blitzvideoplayer8.swf?"+httpstreamingadresse+"'>";
+			playercode += "<param name='bgcolor' value='#ffffff'>";
+			playercode += "<param name='allowFullScreen' value='true'>";
+			playercode += "<param name='allowscriptaccess' value='always'>";
+			playercode += "<param name='menu' value='true'>";
+			
+			playercode += "<embed id='flashvideoid' src='"+httpProt+"://www.blitzvideoserver.de/blitzvideoplayer8.swf?"+httpstreamingadresse+"' allowFullScreen='true' allowscriptaccess='always' wmode='transparent' bgcolor='#ffffff' width='100%' height='100%' type='application/x-shockwave-flash'></embed></object>";		
+		} else {
+			streamParameterHLS = "?";
+			if (typeof(dvr) != "undefined" && dvr != "") streamParameterHLS += "DVR";
+			if (typeof(secureid) != "undefined" && secureid != "") streamParameterHLS += "&secureid="+secureid;
+			if (typeof(videostartoffset) != "undefined" && videostartoffset != "")	streamParameterHLS += "&startpos="+videostartoffset;
+			if (typeof(videostopoffset) != "undefined" && videostopoffset != "")	streamParameterHLS += "&endpos="+videostopoffset;
+			if (streamParameterHLS == "?") streamParameterHLS = "";
+			
+			streamParameterNurSecureidHLS = ""
+			if (typeof(secureid) != "undefined" && secureid != "") streamParameterNurSecureidHLS = "?&secureid="+secureid;
+			
+			if (streamnameHLS.indexOf("/") == 0) streamnameHLS = streamnameHLS.slice(1);
+			//if (navigator.userAgent.indexOf("BlackBerry") >= 0 || navigator.userAgent.indexOf("Android 1") >= 0 || navigator.userAgent.indexOf("Android 2") >= 0 ) {
+			//	playercode = '<a href="'+rtspadresse+streamnameHLS+streamParameterHLS+'"><img width="320px" height="180px" src="'+httpProt+'://www.blitzvideoserver.de/playervorschau.png" alt="Video abspielen (RTP/RTSP)"></a>';
+			//} else {
+				
+			if (typeof (smil) != "undefined" && smil != "") { //falls SMIL vorhanden, soll sie auch verwendet werden.
+				if (navigator.userAgent.toLowerCase().indexOf("trident") >= 0) { //Ausnahme IE. Hier wird die mp4 verwendet, insofern sie vorhanden ist
+					if (streamnameHLS == "") {
+						streamnameHLS = "smil:" + smil;
+					} else {
+						streamnameHLS = "mp4:" + streamnameHLS;
+					}
+				} else { 
+					streamnameHLS = "smil:" + smil;
+				}
+			} else {
+				if (streamnameHLS.indexOf(".mp3") != -1 && streamnameHLS.indexOf(".mp3") == streamnameHLS.length - 4) {
+					streamnameHLS = "mp3:" + streamnameHLS;
+				} else {
+					streamnameHLS = "mp4:" + streamnameHLS;
+				}
+			}
+			
+			
+			aktuelleDurchlaufPosition = 0;
+			videoReihenfolgeArray = new Array();
+			if ( typeof(preroll) != "undefined" && preroll != "") vorspann = preroll;	//Fuer HTML5 Player gibt es keine Pre- und Postroll
+			if ( typeof(postroll) != "undefined" && postroll != "") abspann = postroll; //Statt dessen Vor- und Abspann
+			
+			if (typeof(vorspann) != "undefined" && vorspann != "") {
+				vorspann = extFileFromRTMP(vorspann);
+				videoReihenfolgeArray.push( livetovod(httpstreamingadresse) + vorspann + "/playlist.m3u8" +streamParameterNurSecureidHLS );
+			}
+			
+			videoReihenfolgeArray.push( httpstreamingadresse + streamnameHLS + "/playlist.m3u8"+streamParameterHLS );
+			videoArrayHauptfilmPos = videoReihenfolgeArray.length -1;
+			
+			if (typeof(abspann) != "undefined" && abspann != "") {
+				abspann = extFileFromRTMP(abspann);
+				videoReihenfolgeArray.push( httpstreamingadresse + abspann + "/playlist.m3u8" +streamParameterNurSecureidHLS );
+			}
+			
+			//vshSource = httpstreamingadresse + streamnameHLS + "/playlist.m3u8"+streamParameterHLS;
+			//trace("hauptvideo: "+videoReihenfolgeArray[videoArrayHauptfilmPos]);
+			//if (navigator.userAgent.indexOf("Firefox") >= 0 || navigator.userAgent.indexOf("Windows Phone") >= 0 || mobilgeraet == false ) {
+			if ( nativenHlsPlayerVerwenden == false) {
+				if (autostart == 1) {
+					autostart = true;
+					//trace("Autostart aktiv. (Manche Browser führen diesen aber ggf. nicht aus.)")
+				} else {
+					autostart = false;
+				}
+				clapprControls = false;
+				clapprHideMediaControl = true;
+				clapprChromeless = false;
+				
+				if (typeof(ohneplayerleiste) != "undefined" && ohneplayerleiste == 1) {
+					//clapprControls = false;
+					clapprHideMediaControl = true;
+					//clapprChromeless = true;
+				} else {
+					//clapprControls = true;
+				}
+				if (typeof(medialeisteNichtAusblenden) != "undefined" && medialeisteNichtAusblenden == 1) {
+					clapprHideMediaControl = false;
+				}
+				
+				
+				if (typeof(timelinecolor) != "undefined" && timelinecolor != "") {
+					clapprseekbar = "#"+timelinecolor;
+				} else {
+					clapprseekbar = "#43a6ff";
+					//if (httpstreamingadresse.indexOf("-live") >=0) clapprseekbar = "#ff0000";
+				}
+				
+				preloadparamclappr = 'metadata'; //auto|metadata|none
+				if (typeof(bgimage) != "undefined" && bgimage != "") preloadparamclappr = 'none';
+				
+
+				document.getElementById('videodiv').innerHTML = "";
+				
+				clapprPlayer = new Clappr.Player({mute: "true", autoPlay: autostart, source: videoReihenfolgeArray[aktuelleDurchlaufPosition], parentId: "#videodiv", width:"100%", height:"100%", loop:false, poster:bgimage, controls:clapprControls, chromeless:clapprChromeless, hideMediaControl:clapprHideMediaControl, maxBufferLength:10, hlsjsConfig: {maxBufferLength: 10, maxMaxBufferLength : 15, startLevel: 3, preload: preloadparamclappr}, mediacontrol: {seekbar: clapprseekbar, buttons: "#dfdfdf"}, events: {
+					onPlay: function(){onPlayClappr()},
+					onEnded:function(){onendedClappr()}}
+				});
+
+				/*
+				var script = document.createElement("script");
+				script.setAttribute("type", "text/javascript");
+				//script.setAttribute("async", "async");
+				script.setAttribute("src", "https://cdn.jsdelivr.net/clappr/latest/clappr.min.js");
+				script.onload = function() {
+					clapprPlayer = new Clappr.Player({source: videoReihenfolgeArray[aktuelleDurchlaufPosition], parentId: "#videodiv", width:"100%", height:"100%", autoPlay:autostart, loop:false, poster:bgimage, controls:clapprControls, chromeless:clapprChromeless, hideMediaControl:clapprHideMediaControl, maxBufferLength:10, hlsjsConfig: {maxBufferLength: 10, maxMaxBufferLength : 15, startLevel: 3, preload: preloadparamclappr}, mediacontrol: {seekbar: clapprseekbar, buttons: "#dfdfdf"}, events: {
+						onPlay: function(){onPlayClappr()},
+						onEnded:function(){onendedClappr()}}
+						});
+					playercode = "";
+					//trace("clappr start source: "+videoReihenfolgeArray[aktuelleDurchlaufPosition]);
+					//if (httpstreamingadresse.indexOf("kunde")>0) clapprPlayer.mute();
+				}
+				document.body.appendChild(script);
+				
+				if (typeof(ohneplayerleiste) != "undefined" && ohneplayerleiste == 1) {
+					//clapprPlayer.on(Clappr.Events.PLAYER_PLAY, function(){clapprPlayer.core.mediaControl.disable()});
+					//clapprPlayer.on(Clappr.Events.PLAYER_PAUSE, function(){clapprPlayer.core.mediaControl.enable()});
+				}
+				*/
+			} else {
+				if (typeof(ohneplayerleiste) != "undefined" && ohneplayerleiste == 1) {
+					controlsParam = '';
+				} else {
+					controlsParam = 'controls="controls"';
+				}
+				if (typeof(playsinline) != "undefined" && playsinline == 1) {
+					playsinline = 'playsinline';
+				} else {
+					playsinline = '';
+				}
+	playsinline = 'playsinline';			
+				preloadparam = 'preload="metadata"'; //auto|metadata|none
+				if (typeof(bgimage) != "undefined" && bgimage != "") preloadparam = 'preload="none"';
+				
+				autoplayParam = '';
+				if (autostart == 1) {
+					autoplayParam = 'autoplay';
+					trace("Autostart aktiv. (Manche Browser führen diesen aber ggf. nicht aus.)")
+				}
+				playercode = '<video muted '+autoplayParam+' id="vshHTMLVideoPlayer" onplay="onplayVideo(event)" onended="onendedVideo(event)" poster="'+bgimage+'" '+controlsParam+' '+playsinline+' width="'+aktuelleVideobreite+'" height="'+aktuelleVideohoehe+'" src="'+videoReihenfolgeArray[aktuelleDurchlaufPosition]+'" x-webkit-airplay="allow" '+preloadparam+'></video>';
+				//trace("html5 hls start source: "+videoReihenfolgeArray[aktuelleDurchlaufPosition]);
+			}
+		}
+		if (playercode.length >0) document.getElementById('videodiv').innerHTML = playercode;
+	}	
+	
+	
+	
+	
+	function onPlayClappr(e) {
+		if (typeof(seitenrefreshInterval) != "undefined") clearInterval(seitenrefreshInterval);
+		seitenrefreshInterval = setInterval(seitenrefresh,30000);
+	}
+	
+	
+	function onendedClappr(e) {
+		aktuelleDurchlaufPosition++;
+		if (aktuelleDurchlaufPosition >= videoReihenfolgeArray.length) {
+			//trace("clappr Videoende");
+			clapprPlayer.configure({autoPlay: false});
+			//clapprPlayer.destroy();
+			//clapprPlayer.stop();
+			clapprPlayer.load(videoReihenfolgeArray[videoArrayHauptfilmPos]);
+			aktuelleDurchlaufPosition = videoArrayHauptfilmPos;
+			if ( (typeof(loop) != "undefined" && loop == 1) || videoReihenfolgeArray[videoArrayHauptfilmPos].indexOf("gigabitvision") >0) {
+				clapprPlayer.play();
+				trace("Videoende - loop aktiv");
+			}
+		} else {
+			//trace("Playlist nächster Clip");
+			clapprPlayer.configure({poster: ""});
+			clapprPlayer.load(videoReihenfolgeArray[aktuelleDurchlaufPosition]);
+			clapprPlayer.play();
+		}
+	}
+	
+	function onplayVideo(e) {
+		//trace("onPlayVideo()");
+		if (typeof(seitenrefreshInterval) != "undefined") clearInterval(seitenrefreshInterval);
+		seitenrefreshInterval = setInterval(seitenrefresh,30000);
+	}
+	
+	
+	function onendedVideo(e) {
+		//trace("onendedVideo() wurde aufgerufen");
+		var video = document.getElementById("vshHTMLVideoPlayer");
+		aktuelleDurchlaufPosition++;
+		if (aktuelleDurchlaufPosition >= videoReihenfolgeArray.length) {
+			//trace("HLS native Videoende");
+			
+			video.removeAttribute("autoplay");
+			video.src = videoReihenfolgeArray[videoArrayHauptfilmPos];
+			video.pause();
+			//video.load();
+			if ( (typeof(loop) != "undefined" && loop == 1) || videoReihenfolgeArray[videoArrayHauptfilmPos].indexOf("gigabitvision") >0) {
+				video.play();
+				trace("Videoende - loop aktiv");
+			}
+		} else {
+			//trace("Playlist nächster Clip");
+			video.poster = "";
+			video.src = videoReihenfolgeArray[aktuelleDurchlaufPosition];
+			video.load();
+			video.play();
+		}
+	}
+	
+	function extFileFromRTMP(url) {
+		if (url.indexOf("rtmp") == 0) {
+			strPos = url.indexOf("/");
+			strPos = url.indexOf("/", strPos+1);
+			strPos = url.indexOf("/", strPos+1);
+			strPos = url.indexOf("/", strPos+1);
+			url = url.slice(strPos+1);
+		}
+		return url;
+	}
+	
+	
+	function livetovod(url) {
+		if (url.indexOf("-live/_definst_/") >0) {
+			strPos = url.indexOf("-live/_definst_/");
+			url = url.slice(0, strPos) + "-vod/_definst_/" +url.slice(strPos+16);
+		}
+		if (url.indexOf("-live-secure/_definst_/") >0) {
+			strPos = url.indexOf("-live-secure/_definst_/");
+			url = url.slice(0, strPos) + "-vod/_definst_/" +url.slice(strPos+23);
+		}
+		if (url.indexOf("-rtplive/_definst_/") >0) {
+			strPos = url.indexOf("-rtplive/_definst_/");
+			url = url.slice(0, strPos) + "-vod/_definst_/" +url.slice(strPos+19);
+		}
+		return url;
+	}
+	
+	function playerneustart() {
+		//trace("playerneustart()");
+		if (typeof(playercode) != "undefined" && playercode.length >0) {
+			if (playercode.indexOf("autostart=1") >0) {
+				//Ersetzen an zwei Positionen
+				playercode = playercode.slice(0, playercode.indexOf("autostart=1")) + "autostart=0" + playercode.slice(playercode.indexOf("autostart=1")+12);
+				playercode = playercode.slice(0, playercode.indexOf("autostart=1")) + "autostart=0" + playercode.slice(playercode.indexOf("autostart=1")+12);
+			}
+			document.getElementById('videodiv').innerHTML = playercode;
+		} else {
+			if (typeof(clapprPlayer) != "undefined") {
+				clapprPlayer.stop();
+			}
+		}
+	}
+	
+	window.onresize = function(event) {
+		//trace("window.onresize");
+	
+		var aktuelleVideobreite = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var aktuelleVideohoehe = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		
+		if (typeof(playerhoehe) != "undefined" && playerhoehe != ""  && aktuelleVideohoehe > playerhoehe ) {
+			aktuelleVideohoehe = playerhoehe;
+		} 
+		if (typeof(playerbreite) != "undefined" && playerbreite != "" &&  aktuelleVideobreite > playerbreite ) {
+			aktuelleVideobreite = playerbreite;
+		} 
+		
+		
+		var video =  document.getElementById("videodiv")
+		if (video) {
+			
+			if ((video.height - aktuelleVideohoehe) > 6 || (video.height - aktuelleVideohoehe) < -6) {
+				video.height = aktuelleVideohoehe;
+			}
+			if ((video.width - aktuelleVideobreite) > 6 || (video.width - aktuelleVideobreite) < -6) {
+				video.width = aktuelleVideobreite;
+			}
+		} 
+		
+		document.getElementById('videodiv').style.height = aktuelleVideohoehe+"px";
+		document.getElementById('videodiv').style.width = aktuelleVideobreite+"px";
+		document.getElementById('videodiv').style.left = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)/2 -(aktuelleVideobreite /2) +"px";
+		document.getElementById('videodiv').style.top = ((window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight)/2 -(aktuelleVideohoehe /2)) +"px";
+		
+		
+		//iframe mit z.B. fester Größe von 640x360... sonst kann die Größe sich ständig erhöhen... Deubner
+		var video = document.getElementById("vshHTMLVideoPlayer");
+		if (video) {
+			if ((video.height - aktuelleVideohoehe) > 6 || (video.height - aktuelleVideohoehe) < -6) {
+				video.height = aktuelleVideohoehe;
+			}
+			if ((video.width - aktuelleVideobreite) > 6 || (video.width - aktuelleVideobreite) < -6) {
+				video.width = aktuelleVideobreite;
+			}
+		} 	
+	}
+	window.onresize("");
+</script>
+
+ </body>
+</html>
