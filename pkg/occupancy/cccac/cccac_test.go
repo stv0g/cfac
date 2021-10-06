@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/stv0g/cfac/pkg/cccac"
+	"github.com/stv0g/cfac/pkg/occupancy/cccac"
 )
 
 func TestFetchStatus(t *testing.T) {

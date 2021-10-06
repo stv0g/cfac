@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stv0g/cfac/pkg/autobahn"
+	"github.com/stv0g/cfac/pkg/mobility/autobahn"
 )
 
 func TestGetRoads(t *testing.T) {

@@ -1,6 +1,6 @@
 package mcfit
 
-import "github.com/gocolly/colly"
+import "github.com/gocolly/colly/v2"
 
 const (
 	StudioTags   = "AKTIV-391B8025C1714FB9B15BB02F2F8AC0B2"

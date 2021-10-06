@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/gocolly/colly/v2"
-	"github.com/stv0g/cfac/pkg/blutspendepegel"
+	"github.com/stv0g/cfac/pkg/health/blutspendepegel"
 )
 
 func TestFetchPegel(t *testing.T) {

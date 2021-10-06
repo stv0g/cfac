@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stv0g/cfac/pkg/aseag/apag"
+	"github.com/stv0g/cfac/pkg/mobility/apag"
 )
 
 func TestFetchAllHouses(t *testing.T) {
