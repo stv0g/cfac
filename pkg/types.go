@@ -9,3 +9,7 @@ type BoundingBox struct {
 	NorthWest Coordinate
 	SouthEast Coordinate
 }
+
+type ErrorCallback func(error)
+
+type Percent int

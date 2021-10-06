@@ -8,3 +8,7 @@ func GetBoundingBox() BoundingBox {
 		SouthEast: Coordinate{50.912991, 6.443481},
 	}
 }
+
+func AGS() string {
+	return "053340002002"
+}
