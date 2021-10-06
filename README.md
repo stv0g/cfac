@@ -19,7 +19,7 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 ### Mobilität (`mobility`)
 
-- [APAG](https://www.apag.de/): Parkhäuser und aktuelle Auslastung
+- ✅ [APAG](https://www.apag.de/): Parkhäuser und aktuelle Auslastung
 - [Velocity](https://www.velocity-aachen.de/): Stationen, Räder und Ladezustände
 - [VOI](https://www.voiscooters.com/de/): Aktuelle Roller Standorte und Ladezustände
 - [Cambio](https://www.cambio-carsharing.de/?cms_knschluessel=HOME&cms_Feurocode=AAC): Stationen und aktuell verfügbare Mietwagen

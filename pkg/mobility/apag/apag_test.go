@@ -1,22 +1,48 @@
 package apag_test
 
 import (
-	"fmt"
 	"testing"
 
+	th "github.com/stv0g/cfac/internal/testing"
 	"github.com/stv0g/cfac/pkg/mobility/apag"
 )
 
 func TestFetchAllHouses(t *testing.T) {
-	houses, err := apag.FetchAllHouses()
-	if err != nil {
-		t.Errorf("Failed to fetch house list: %s", err)
-	}
+	c := th.NewCollector(t)
+	defer c.Close()
 
-	if houses == nil || len(houses) < 10 {
-		t.Fail()
-	}
+	apag.FetchAllHouses(c.Collector, func(h []apag.House) {
+		for _, i := range h {
+			t.Logf("%#+v", i)
+		}
 
-	fmt.Printf("Houses: %#v", houses)
-	t.Fail()
+		c.MarkHandled()
+	}, c.ErrorCallback())
+
+}
+
+func TestFetchAllHouseStats(t *testing.T) {
+	c := th.NewCollector(t)
+	defer c.Close()
+
+	apag.FetchAllHouseStats(c.Collector, func(h []apag.HouseStats) {
+		for _, i := range h {
+			t.Logf("%#+v", i)
+		}
+
+		c.MarkHandled()
+	}, c.ErrorCallback())
+}
+
+func TestFetchAllHousesWithStats(t *testing.T) {
+	c := th.NewCollector(t)
+	defer c.Close()
+
+	apag.FetchAllHousesWithStats(c.Collector, func(h []apag.House) {
+		for _, i := range h {
+			t.Logf("%#+v", i)
+		}
+
+		c.MarkHandled()
+	}, c.ErrorCallback())
 }
