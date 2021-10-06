@@ -1,8 +1,14 @@
 package cfac
 
+type City struct {
+	Coordinate  Coordinate
+	BoundingBox BoundingBox
+	AGS         string
+}
+
 type Coordinate struct {
-	Latitude  float32
-	Longitude float32
+	Latitude  float64
+	Longitude float64
 }
 
 type BoundingBox struct {

@@ -11,7 +11,7 @@ func TestWOFOccupancy(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	wof.FetchOccupancy(c, func(s wof.Studio) {
+	wof.FetchOccupancy(c.Collector, func(s wof.Studio) {
 		t.Logf("Studio: %+v\n", s)
 
 		c.MarkHandled()

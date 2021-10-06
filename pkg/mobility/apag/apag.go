@@ -108,7 +108,7 @@ type HouseStats struct {
 }
 
 func FetchAllHouses() (HouseList, error) {
-	resp, err := http.Get(URL)
+	resp, err := http.Get(Url)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +150,7 @@ func FetchAllHouses() (HouseList, error) {
 }
 
 func (hs HouseList) FetchAllStats() error {
-	resp, err := http.Get(APIUrl + "?q=all&d=fulldata&f=json")
+	resp, err := http.Get(UrlApi + "?q=all&d=fulldata&f=json")
 	if err != nil {
 		return err
 	}
@@ -183,7 +183,7 @@ func (hs HouseList) FetchAllStats() error {
 }
 
 func (h *House) FetchStats() error {
-	resp, err := http.Get(URL + "?q=" + h.Ident + "&d=fulldata&f=json")
+	resp, err := http.Get(UrlApi + "?q=" + h.Ident + "&d=fulldata&f=json")
 	if err != nil {
 		return err
 	}

@@ -11,7 +11,7 @@ func TestSpielbankOccupancy(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	spielbank.FetchOccupancy(c, func(p spielbank.Occupancy) {
+	spielbank.FetchOccupancy(c.Collector, func(p spielbank.Occupancy) {
 		t.Logf("Occupancy: %+v\n", p)
 
 		c.MarkHandled()
