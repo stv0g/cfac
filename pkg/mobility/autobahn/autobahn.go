@@ -4,12 +4,19 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"net/url"
+	"path"
 )
 
 const (
 	UrlApi = "https://verkehr.autobahn.de/o/autobahn/"
 )
+
+type ResponseWebcams struct {
+	Webcams []Webcam `json:"webcams"`
+}
+type ResponseRoads struct {
+	Roads []Road `json:"roads"`
+}
 
 type Coordinate struct {
 	Lat  string `json:"lat"`
@@ -33,9 +40,9 @@ type Webcam struct {
 	DisplayType              string        `json:"display_type"`
 	LorryParkingFeatureIcons []interface{} `json:"lorryParkingFeatureIcons"`
 	Future                   bool          `json:"future"`
-	Imageurl                 string        `json:"imageurl"`
+	ImageURL                 string        `json:"imageurl"`
 	Subtitle                 string        `json:"subtitle"`
-	Linkurl                  string        `json:"linkurl"`
+	LinkURL                  string        `json:"linkurl"`
 }
 
 func GetRoads() ([]Road, error) {
@@ -44,30 +51,23 @@ func GetRoads() ([]Road, error) {
 		return nil, err
 	}
 
-	var bodyJson struct {
-		Roads []Road `json:"roads"`
-	}
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := json.Unmarshal(body, &bodyJson); err != nil {
+	var respRoads ResponseRoads
+	if err := json.Unmarshal(body, &respRoads); err != nil {
 		return nil, err
 	}
 
-	return bodyJson.Roads, nil
+	return respRoads.Roads, nil
 }
 
 func GetWebcams(r Road) ([]Webcam, error) {
-	resp, err := http.Get(UrlApi + "/" + url.PathEscape(string(r)) + "/services/webcam")
+	resp, err := http.Get(UrlApi + "/" + path.Join(string(r), "services", "webcam"))
 	if err != nil {
 		return nil, err
-	}
-
-	var bodyJson struct {
-		Webcams []Webcam `json:"webcam"`
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -75,9 +75,10 @@ func GetWebcams(r Road) ([]Webcam, error) {
 		return nil, err
 	}
 
-	if err := json.Unmarshal(body, &bodyJson); err != nil {
+	var respWebcams ResponseWebcams
+	if err := json.Unmarshal(body, &respWebcams); err != nil {
 		return nil, err
 	}
 
-	return bodyJson.Webcams, nil
+	return respWebcams.Webcams, nil
 }

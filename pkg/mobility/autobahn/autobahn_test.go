@@ -1,7 +1,6 @@
 package autobahn_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
@@ -26,8 +25,6 @@ func TestGetWebcams(t *testing.T) {
 		t.FailNow()
 	}
 
-	all_webcams := []autobahn.Webcam{}
-
 	for _, road := range roads {
 		if strings.Contains(string(road), "/") {
 			continue
@@ -39,13 +36,10 @@ func TestGetWebcams(t *testing.T) {
 			t.FailNow()
 		}
 
-		all_webcams = append(all_webcams, webcams...)
+		for _, webcam := range webcams {
+			if webcam.LinkURL != "" {
+				fmt.Println(webcam.LinkURL)
+			}
+		}
 	}
-
-	b, err := json.MarshalIndent(&all_webcams, "", " ")
-	if err != nil {
-		t.Fail()
-	}
-
-	fmt.Printf("Webcams: %s", string(b))
 }
