@@ -15,56 +15,92 @@ _cfac_ is currently under active development and considered in an alpha stage.
 
 _cfac_ accesses data from various sources by the means of web-scraping and undocumented APIs.
 
-### Package contents
+## Package contents
 
 ### Mobilität (`mobility`)
 
-- [APAG](): Parkhäuser und aktuelle Auslastung
-- [Velocity](): Stationen, Räder und Ladezustände
-- [VOI](): Aktuelle Roller Standorte und Ladezustände
-- [Cambio](): Stationen und aktuell verfügbare Mietwagen
-- [Flinkster](): Stationen und aktuell verfügbare Mietwagen
+- [APAG](https://www.apag.de/): Parkhäuser und aktuelle Auslastung
+- [Velocity](https://www.velocity-aachen.de/): Stationen, Räder und Ladezustände
+- [VOI](https://www.voiscooters.com/de/): Aktuelle Roller Standorte und Ladezustände
+- [Cambio](https://www.cambio-carsharing.de/?cms_knschluessel=HOME&cms_Feurocode=AAC): Stationen und aktuell verfügbare Mietwagen
+- [Flinkster](https://www.flinkster.de/): Stationen und aktuell verfügbare Mietwagen
 - [Ford Carsharing](https://www.ford-carsharing.de/de/standorte?p=1)
-- [MOVA](https://mova.aseag.de/#/home)
-- [DB / Hafas]()
+- [MOVA](https://mova.aseag.de/)
+- [Deutsche Bahn (HAFAS)](https://github.com/public-transport/hafas-client/blob/master/readme.md#background)
 - [Flüge](https://de.flightaware.com/live/airport/EDKA): Aktuelle Flüge über Aachener Stadtgebiet
-- [Baustelleninformationsssytem](): Aktuelle Baustellen im Aachener Stadtgebiet
+- [Baustelleninformationsssytem](https://bsis.aachen.de/): Aktuelle Baustellen im Aachener Stadtgebiet
     - http://aachen.de/DE/stadt_buerger/verkehr_strasse/strassenplanung_bau/bsis/index.html
-    - https://bsis.aachen.de/
-- [E-Ladesäulen]()
 
-## Besucherzahlen & aktuelle Auslastung (`occupancy`)
+#### Elektro Ladeinfrastruktur (`ev_charger`)
 
-- [Carolus Therme](https://www.carolus-thermen.de/en/thermalbath/#occupation)
-- [Bürgerservice Wartezeiten](https://serviceportal.aachen.de/wartezeiten)
+- [Open Charge Map](https://openchargemap.org/site)
+- [plugsurfing](https://www.plugsurfing.com/map?location=Aachen,%20Germany&lang=en)
+
+### Besucherzahlen & aktuelle Auslastung (`occupancy`)
+
+- ✅ [Carolus Therme](https://www.carolus-thermen.de/en/thermalbath/#occupation)
+- ✅ [Spielbank Aachen](https://www.spielbank-aachen.de)
 - [Chaos Computer Club Aachen](https://wiki.aachen.ccc.de/doku.php?id=projekte:clubstatus)
-- Fitnesscenter:
+
+#### Fitnessstudios (`gyms`)
+
   - [FitX](https://www.fitx.de/fitnessstudios/aachen-europaplatz)
   - [McFit](https://www.mcfit.com/de/fitnessstudios/studiosuche/studiodetails/studio/aachen/)
-  - [RWTH Hochschulsport](https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Auslastung.html)
-  - [MedAix](https://www.medaix.de/standorte/aachen-elisengalerie)
+  - ✅ [RWTH Hochschulsport](https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Auslastung.html)
+  - ✅ [MedAix](https://www.medaix.de/standorte/aachen-elisengalerie)
+  - ✅ [Word of Fitness](http://besucher.wof-fitness.de/)
 
-### Wetter (`weather`)
+### Umwelt (`environment`)
+
+- [sensor.community](https://sensor.community)
+
+#### Wetter (`weather`)
 
 - [AWEKAS](https://www.awekas.at/)
 - [meteo Aachen](https://meteoaachen.de/)
 - [Deutscher Wetterdienst](https://www.dwd.de/DE/wetter/wetterundklima_vorort/nordrhein-westfalen/aachen/_node.html)
 - [Eifelwetter](https://www.eifelwetter.de/): aktuelle Wetterdaten
+- [Buienalarm](https://buienalarm.nl)
+
+#### Luftqualität (`air_quality`)
+
 - [LANUV](https://www.lanuv.nrw.de/umwelt/luft/immissionen/aktuelle-luftqualitaet): aktuelle Luftqualität
+
+#### Strahlung (`radiation`)
+
 - [ODLinfo](https://odlinfo.bfs.de/DE/aktuelles/messstelle/053130003.html): aktuelle Radioaktivitäts / ODL Messungen
+- [Gammasense](https://gammasense.org/map/)
+- [Geige Counter World Map (gmcmap.com)](https://www.gmcmap.com/)
+- [radmon.org](https://radmon.org/index.php)
+- [Tihange-Doel Radiation Monitoring (TDRM)](https://tdrm.fiff.de/)
 
 ### Webcams (`webcams`)
 
 ### Gesundheit (`health`)
 
-- [UK Aachen](https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/2021-08): aktueller Blutspendepegel 
-- [Covid 19](): aktuelle Fallzahlen in der Städteregion
+- [UK Aachen](https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/2021-08): aktueller Blutspendepegel
+- [Covid 19](https://offenedaten.aachen.de/dataset/aktuelle-lage-zum-corona-virus): aktuelle Fallzahlen in der Städteregion
 
 ### Sonstiges
 
 - [Abfallapp/navi](https://abfallnavi.de/aachen/)
 - [Freifunk Aachen](https://map.aachen.freifunk.net/): Standorte Accesspoints, aktuelle Auslastung, [Open-data](https://data.aachen.freifunk.net)
-- [RWTH Aachen University](): aktuelle Auslastung Lernräume
+
+- [Amateuerfunk-Gruppe der RWTH Aachen](https://www.afu.rwth-aachen.de/)
+  - APRS Receiver
+
+- [RTL-SDR](https://www.rtl-sdr.com/about-rtl-sdr/)
+  - Tracking aircraft positions like a radar with [ADSB decoding](https://www.rtl-sdr.com/adsb-aircraft-radar-with-rtl-sdr/)
+  - [Receiving NOAA weather satellite images.](https://www.rtl-sdr.com/rtl-sdr-tutorial-receiving-noaa-weather-satellite-images/)
+
+### Out-of-service
+
+**TODO:** Contact data providers via mail..
+
+- [Wetterstation am Physikzentrum der RWTH Aachen](https://wetterstation.physik.rwth-aachen.de/)
+- [Wetterstation Geo RWTH](https://www.klimageo.rwth-aachen.de/cms/Klimageo/Das-Lehr-und-Forschungsgebiet/Ausstattung/~pcdx/Wetterstationen/)
+- [RWTH Aachen Lernraumampel](https://blog.rwth-aachen.de/lehre/2017/07/28/die-lernraumampel-ist-da/)
+- [Bürgerservice Wartezeiten](https://serviceportal.aachen.de/wartezeiten)
 
 ## Roadmap: future ideas
 
