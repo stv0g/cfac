@@ -78,7 +78,7 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 ### Gesundheit (`health`)
 
-- [UK Aachen](https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/2021-08): aktueller Blutspendepegel
+- ✅ [Blutspendepegel](https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/2021-08)
 - [Covid 19](https://offenedaten.aachen.de/dataset/aktuelle-lage-zum-corona-virus): aktuelle Fallzahlen in der Städteregion
 
 ### Sonstiges

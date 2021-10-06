@@ -1,12 +1,12 @@
 package blutspende
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gocolly/colly/v2"
+	cfac "github.com/stv0g/cfac/pkg"
 )
 
 const (
@@ -17,23 +17,19 @@ type Pegel struct {
 	Donations int
 }
 
-type Callback func(p Pegel)
-
-func FetchPegel(c *colly.Collector, cb Callback) {
-	t := time.Now()
-	FetchPegelTime(c, cb, t)
+func FetchPegel(c *colly.Collector, cb func(p Pegel), errCb cfac.ErrorCallback) {
+	FetchPegelTime(c, time.Now(), cb, errCb)
 }
 
-func FetchPegelTime(c *colly.Collector, cb Callback, t time.Time) {
+func FetchPegelTime(c *colly.Collector, t time.Time, cb func(p Pegel), errCb cfac.ErrorCallback) {
 
 	c.OnHTML("div.drop-donations", func(h *colly.HTMLElement) {
 		donations := h.Text
 		donations = strings.ReplaceAll(donations, ".", "")
 		dontationsCounter, err := strconv.Atoi(donations)
 
-		fmt.Printf("donations: %s\n", donations)
-
 		if err != nil {
+			errCb(err)
 			return
 		}
 
@@ -42,5 +38,5 @@ func FetchPegelTime(c *colly.Collector, cb Callback, t time.Time) {
 		})
 	})
 
-	c.Visit(fmt.Sprintf("%s/%04d-%02d", Url, t.Year(), t.Month()))
+	c.Visit(Url + t.Format("2006-01"))
 }
