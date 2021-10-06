@@ -44,7 +44,7 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 #### Fitnessstudios (`gyms`)
 
-  - [FitX](https://www.fitx.de/fitnessstudios/aachen-europaplatz)
+  - ✅ [FitX](https://www.fitx.de/fitnessstudios/aachen-europaplatz)
   - [McFit](https://www.mcfit.com/de/fitnessstudios/studiosuche/studiodetails/studio/aachen/)
   - ✅ [RWTH Hochschulsport](https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Auslastung.html)
   - ✅ [MedAix](https://www.medaix.de/standorte/aachen-elisengalerie)
