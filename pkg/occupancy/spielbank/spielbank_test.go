@@ -8,17 +8,12 @@ import (
 )
 
 func TestSpielbankOccupancy(t *testing.T) {
-	c := th.NewCollyCollector(t)
-	defer c.Wait()
-
-	handled := false
+	c := th.NewCollector(t)
+	defer c.Close()
 
 	spielbank.FetchOccupancy(c, func(p spielbank.Occupancy) {
 		t.Logf("Occupancy: %+v\n", p)
-		handled = true
-	}, th.ErrorHandler(t))
 
-	if !handled {
-		t.Error("Request not handled")
-	}
+		c.MarkHandled()
+	}, c.ErrorCallback())
 }

@@ -2,7 +2,7 @@ package medaix
 
 import (
 	"encoding/json"
-	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -46,7 +46,7 @@ type Callback func(v VisitorCounter)
 
 func requestData(id int) map[string]string {
 	return map[string]string{
-		"id": fmt.Sprintf("%d", id),
+		"id": strconv.Itoa(id),
 	}
 }
 

@@ -35,8 +35,12 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 		client := gosseract.NewClient()
 		defer client.Close()
 
-		err := client.SetImageFromBytes(r.Body)
-		if err != nil {
+		if err := client.SetWhitelist("0123456789"); err != nil {
+			errCb(err)
+			return
+		}
+
+		if err := client.SetImageFromBytes(r.Body); err != nil {
 			errCb(err)
 			return
 		}
@@ -45,10 +49,6 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 		if err != nil {
 			errCb(err)
 			return
-		}
-
-		if text == "O" || text == "o" {
-			text = "0"
 		}
 
 		fmt.Println(text)

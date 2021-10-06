@@ -8,17 +8,12 @@ import (
 )
 
 func TestMedaixOccupancy(t *testing.T) {
-	c := th.NewCollyCollector(t)
-	defer c.Wait()
+	c := th.NewCollector(t)
+	defer c.Close()
 
-	handled := false
-
-	medaix.FetchOccupancy(c, func(p medaix.VisitorCounter) {
+	medaix.FetchOccupancy(c.Collector, func(p medaix.VisitorCounter) {
 		t.Logf("Occupancy: %+v\n", p)
-		handled = true
-	}, th.ErrorHandler(t))
 
-	if !handled {
-		t.Error("Request not handled")
-	}
+		c.MarkHandled()
+	}, c.ErrorCallback())
 }

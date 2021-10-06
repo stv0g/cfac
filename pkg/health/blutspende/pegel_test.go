@@ -1,27 +1,29 @@
-package blutspendepegel_test
+package blutspende_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/gocolly/colly/v2"
-	"github.com/stv0g/cfac/pkg/health/blutspendepegel"
+	th "github.com/stv0g/cfac/internal/testing"
+	"github.com/stv0g/cfac/pkg/health/blutspende"
 )
 
 func TestFetchPegel(t *testing.T) {
-	c := colly.NewCollector()
+	c := th.NewCollector(t)
+	defer c.Close()
 
-	blutspendepegel.FetchPegel(c, func(p blutspendepegel.BlutspendePegel) {
+	blutspende.FetchPegel(c.Collector, func(p blutspende.Pegel) {
 		fmt.Printf("Pegel: %d\n", p.Donations)
 
 		if p.Donations > 10000 || p.Donations <= 0 {
 			t.Fail()
 		}
+
+		c.MarkHandled()
 	})
 
 	c.OnError(func(r *colly.Response, e error) {
 		t.Errorf("Colly error: %s", e)
 	})
-
-	c.Wait()
 }

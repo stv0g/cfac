@@ -8,17 +8,12 @@ import (
 )
 
 func TestWOFOccupancy(t *testing.T) {
-	c := th.NewCollyCollector(t)
-	defer c.Wait()
-
-	handled := 0
+	c := th.NewCollector(t)
+	defer c.Close()
 
 	wof.FetchOccupancy(c, func(s wof.Studio) {
 		t.Logf("Studio: %+v\n", s)
-		handled++
-	}, th.ErrorHandler(t))
 
-	if handled < 5 {
-		t.Error("Request not handled")
-	}
+		c.MarkHandled()
+	}, c.ErrorCallback())
 }

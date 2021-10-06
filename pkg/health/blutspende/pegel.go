@@ -1,4 +1,4 @@
-package blutspendepegel
+package blutspende
 
 import (
 	"fmt"
@@ -13,11 +13,11 @@ const (
 	Url = "https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/" // +"2020-08/"
 )
 
-type BlutspendePegel struct {
+type Pegel struct {
 	Donations int
 }
 
-type Callback func(p BlutspendePegel)
+type Callback func(p Pegel)
 
 func FetchPegel(c *colly.Collector, cb Callback) {
 	t := time.Now()
@@ -37,7 +37,7 @@ func FetchPegelTime(c *colly.Collector, cb Callback, t time.Time) {
 			return
 		}
 
-		cb(BlutspendePegel{
+		cb(Pegel{
 			Donations: dontationsCounter,
 		})
 	})
