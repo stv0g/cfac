@@ -1,26 +1,23 @@
 package abfallapp
 
 const (
-	Url = "https://aachen-abfallapp.regioit.de/abfall-app-aachen/rest"
+	UrlApi = "https://aachen-abfallapp.regioit.de/abfall-app-aachen/rest"
 
-	UrlStandorte     = Url + "/standorte?ort={ort_name}&ortsteil={ortsteil}&standortart={standortart_name}"
-	UrlStandortArten = Url + "/standorte/standortarten?ort={ort_name}"
-	UrlOrte          = Url + "/orte"
-	UrlFraktionen    = Url + "/fraktionen"
-	UrlStrassen      = Url + "/orte/{ort_id}/strassen"
-	UrlOrtsteile     = Url + "/standorte/standortarten/{standortart_name}/ortsteile?ort={ort_name}" // ?kat=7581006 von stoffe
-	UrlStoffe        = Url + "/stoffe?ort={ort_name}"
+	UrlApiStandorte     = UrlApi + "/standorte?ort={ort_name}&ortsteil={ortsteil}&standortart={standortart_name}"
+	UrlApiStandortArten = UrlApi + "/standorte/standortarten?ort={ort_name}"
+	UrlApiOrte          = UrlApi + "/orte"
+	UrlApiFraktionen    = UrlApi + "/fraktionen"
+	UrlApiStrassen      = UrlApi + "/orte/{ort_id}/strassen"
+	UrlApiOrtsteile     = UrlApi + "/standorte/standortarten/{standortart_name}/ortsteile?ort={ort_name}" // ?kat={kategorie_id} von stoffe
+	UrlApiStoffe        = UrlApi + "/stoffe?ort={ort_name}"
 )
 
 type ResponseFraktionen []Fraktion
 type ResponseStandortArten []StandortArt
 type ResponseOrte []Ort
+type ResponseOrtsteile []Ortsteil
 type ResponseStrassen []Strasse
 type ResponseTermine []Termin
-type ResponseOrtsteile []struct {
-	Ort      string `json:"ort"`
-	Ortsteil string `json:"ortsteil"`
-}
 type ResponseStandorte []Standort
 type ResponseStoffe []Stoff
 
@@ -34,6 +31,11 @@ type Stoff struct {
 type Ort struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+}
+
+type Ortsteil struct {
+	Ort      string `json:"ort"`
+	Ortsteil string `json:"ortsteil"`
 }
 
 type Strasse struct {

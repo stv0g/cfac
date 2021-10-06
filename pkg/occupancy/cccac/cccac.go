@@ -5,8 +5,6 @@ import (
 	"net/http"
 )
 
-// https://wiki.aachen.ccc.de/doku.php?id=projekte:clubstatus
-
 type Status struct {
 	Status string `json:"status"`
 	Time   uint   `json:"time"`
@@ -19,7 +17,7 @@ const (
 )
 
 func FetchStatus() (Status, error) {
-	resp, err := http.Get(Url)
+	resp, err := http.Get(UrlApi)
 	if err != nil {
 		return Status{}, err
 	}

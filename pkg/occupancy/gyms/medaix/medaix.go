@@ -1,5 +1,6 @@
 package medaix
 
 const (
-	Url = "https://www.medaix.de/standorte/aachen-elisengalerie"
+	UrlVisitors = "https://www.medaix.de/counter/visitors.php"
+	UrlCalendar = "https://portal.medaix.de/courseplan/frontend/fillCalendar"
 )

@@ -3,7 +3,7 @@ package bsis
 import "time"
 
 const (
-	Url = "https://bsis.aachen.de/geoserver/ows"
+	UrlApi = "https://bsis.aachen.de/geoserver/ows"
 )
 
 // curl 'https://bsis.aachen.de/geoserver/ows?service=WFS&typeName=BSIS:PUNKTE_ALLE&version=1.1.0&request=GetFeature&outputFormat=application%2Fjson&srsName=EPSG%3A3857' \

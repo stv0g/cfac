@@ -2,8 +2,6 @@ package mova
 
 import "time"
 
-// https://mova.aseag.de/mbroker/rest/areainformation?locationWindow=50.80560928191354,5.939483642578126,50.769253677669205,6.152343750000001&placeTypes=BUS_STOP,CAR_SHARING_STATION,BIKE_SHARING_STATION,RAIL_STATION,POI
-
 const (
 	UrlApi             = "https://mova.aseag.de/mbroker/rest"
 	UrlAreaInformation = UrlApi + "/areainformation?locationWindow=50.772693748685995,6.080337166786195,50.77139442220511,6.089000701904297&placeOrOtherMobilityTypes=BUS_STOP,MOBILITAETSSTATION,CAR_SHARING_STATION,BIKE_SHARING_STATION,RAIL_STATION,POI,ADDRESS,BUS,CAR_SHARING,BIKE_SHARING,RAILWAY"

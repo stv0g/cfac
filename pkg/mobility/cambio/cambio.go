@@ -1,7 +1,12 @@
 package cambio
 
-// https://cwapi.cambio-carsharing.com/pub/AAC/stations
-// https://cwapi.cambio-carsharing.com/pub/AAC/vehicles
+const (
+	CityID = "AAC"
+
+	UrlApi         = "https://cwapi.cambio-carsharing.com/pub/{city_id}"
+	UrlApiStations = UrlApi + "/stations"
+	UrlApiVehicles = UrlApi + "/vehicles"
+)
 
 type StationAddress struct {
 	StreetAddress   string `json:"streetAddress"`

@@ -74,9 +74,9 @@ import (
 // }
 
 const (
-	Url    = "https://www.apag.de"
-	UrlApi = Url + "/qad_restAPI.php"
-	// ChartXSUrl = "https://www.apag.de/qad_restAPI.php?q={ident}&d=chartxs&max={max}"
+	Url        = "https://www.apag.de"
+	UrlApi     = Url + "/qad_restAPI.php"
+	UrlChartXS = UrlApi + "?q={ident}&d=chartxs&max={max}"
 )
 
 type HouseList []House

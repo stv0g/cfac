@@ -9,6 +9,10 @@ const (
 	UrlRecent   = UrlAPI + "/recent"
 )
 
+type ResponseRecent []Measurement
+type ResponseStations []Station
+type ResponseHourly []Measurement
+
 type Station struct {
 	SensorType  string    `json:"sensor_type"`
 	ID          string    `json:"id"`

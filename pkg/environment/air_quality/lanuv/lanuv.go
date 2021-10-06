@@ -10,7 +10,7 @@ package lanuv
 // https://github.com/smatt/LanuvParser/blob/master/LanuvParser.java
 
 const (
-	UrlBase   = "https://www.lanuv.nrw.de/fileadmin/lanuv/luft/immissionen/aktluftqual"
-	Url       = UrlBase + "/eu_luftqualitaet.csv"
-	UrlHeader = UrlBase + "/header_eu_luftqualitaet.csv"
+	UrlBase      = "https://www.lanuv.nrw.de/fileadmin/lanuv/luft/immissionen/aktluftqual"
+	UrlCsv       = UrlBase + "/eu_luftqualitaet.csv"
+	UrlCsvHeader = UrlBase + "/header_eu_luftqualitaet.csv"
 )

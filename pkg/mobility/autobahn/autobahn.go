@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	Url = "https://verkehr.autobahn.de/o/autobahn/"
+	UrlApi = "https://verkehr.autobahn.de/o/autobahn/"
 )
 
 type Coordinate struct {
@@ -39,7 +39,7 @@ type Webcam struct {
 }
 
 func GetRoads() ([]Road, error) {
-	resp, err := http.Get(Url)
+	resp, err := http.Get(UrlApi)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func GetRoads() ([]Road, error) {
 }
 
 func GetWebcams(r Road) ([]Webcam, error) {
-	resp, err := http.Get(Url + "/" + url.PathEscape(string(r)) + "/services/webcam")
+	resp, err := http.Get(UrlApi + "/" + url.PathEscape(string(r)) + "/services/webcam")
 	if err != nil {
 		return nil, err
 	}
