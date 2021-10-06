@@ -10,8 +10,19 @@ package cccac
 
 import (
 	"encoding/json"
-	"net/http"
+
+	"github.com/gocolly/colly/v2"
+	cfac "github.com/stv0g/cfac/pkg"
 )
+
+const (
+	UrlApi              = "https://status.aachen.ccc.de/api/v0"
+	UrlApiCurrentStatus = UrlApi + "/status/current?public"
+)
+
+type ResponseCurrentStatus struct {
+	Changed Status `json:"changed"`
+}
 
 type Status struct {
 	Status string `json:"status"`
@@ -19,27 +30,16 @@ type Status struct {
 	Type   string `json:"type"`
 }
 
-const (
-	UrlApi       = "https://status.aachen.ccc.de/api/v0"
-	UrlApiStatus = UrlApi + "/status/current?public"
-)
+func FetchStatus(c *colly.Collector, cb func(sts Status), errCb cfac.ErrorCallback) {
+	c.OnResponse(func(r *colly.Response) {
+		var resp ResponseCurrentStatus
+		if err := json.Unmarshal(r.Body, &resp); err != nil {
+			errCb(err)
+			return
+		}
 
-func FetchStatus() (Status, error) {
-	resp, err := http.Get(UrlApi)
-	if err != nil {
-		return Status{}, err
-	}
+		cb(resp.Changed)
+	})
 
-	dec := json.NewDecoder(resp.Body)
-
-	var sts struct {
-		Changed Status `json:"changed"`
-	}
-
-	err = dec.Decode(&sts)
-	if err != nil {
-		return Status{}, err
-	}
-
-	return sts.Changed, nil
+	c.Visit(UrlApiCurrentStatus)
 }

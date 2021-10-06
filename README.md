@@ -40,12 +40,12 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 - ✅ [Carolus Therme](https://www.carolus-thermen.de/en/thermalbath/#occupation)
 - ✅ [Spielbank Aachen](https://www.spielbank-aachen.de)
-- [Chaos Computer Club Aachen](https://wiki.aachen.ccc.de/doku.php?id=projekte:clubstatus)
+- ✅ [Chaos Computer Club Aachen](https://wiki.aachen.ccc.de/doku.php?id=projekte:clubstatus)
 
 #### Fitnessstudios (`gyms`)
 
 - ✅ [FitX](https://www.fitx.de/fitnessstudios/aachen-europaplatz)
-- [McFit](https://www.mcfit.com/de/fitnessstudios/studiosuche/studiodetails/studio/aachen/)
+- ✅ [McFit](https://www.mcfit.com/de/fitnessstudios/studiosuche/studiodetails/studio/aachen/)
 - ✅ [RWTH Hochschulsport](https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Auslastung.html)
 - ✅ [MedAix](https://www.medaix.de/standorte/aachen-elisengalerie)
 - ✅ [Word of Fitness](http://besucher.wof-fitness.de/)
