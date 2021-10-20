@@ -19,44 +19,6 @@ const (
 	UrlChartXS = UrlApi + "?q={ident}&d=chartxs&max={max}"
 )
 
-type House struct {
-	NID       uint    `json:"nid,string"`
-	Ident     string  `json:"ident"`
-	Url       string  `json:"url"`
-	Title     string  `json:"title"`
-	Latitude  float32 `json:"lat,string"`
-	Longitude float32 `json:"lon,string"`
-	Capacity  uint    `json:"capacity,string"`
-	Open      string  `json:"open"`
-	Height    string  `json:"height"`
-	Type      string  `json:"type"`
-
-	Stats *HouseStats
-}
-
-type CustomTime struct {
-	time.Time
-}
-
-func (c *CustomTime) UnmarshalJSON(b []byte) error {
-	var err error
-	loc, _ := time.LoadLocation("Europe/Berlin")
-	s := strings.Trim(string(b), "\"")
-	c.Time, err = time.ParseInLocation("2006-01-02 15:04:05", s, loc)
-	return err
-}
-
-type HouseStats struct {
-	Ident   string     `json:"ident"`
-	Date    CustomTime `json:"date"`
-	Max     uint       `json:"max,string"`
-	Percent float32    `json:"percent,string"`
-	Count   uint       `json:"count,string"`
-	Free    uint       `json:"free,string"`
-	Full    int        `json:"full,string"`
-	Trend   string     `json:"trend"`
-}
-
 func FetchAllHouses(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var re = regexp.MustCompile(`(?m)var houses = (.*);$`)
@@ -91,13 +53,13 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallba
 	c.Visit(Url)
 }
 
-func FetchAllHouseStats(c *colly.Collector, cb func([]HouseStats), errCb cfac.ErrorCallback) {
-	FetchHouseStats(c, "all", cb, errCb)
+func FetchAllHouseStats(c *colly.Collector, cb func([]Stats), errCb cfac.ErrorCallback) {
+	FetchHouseStats(c, "", cb, errCb)
 }
 
-func FetchHouseStats(c *colly.Collector, ident string, cb func([]HouseStats), errCb cfac.ErrorCallback) {
+func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), errCb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
-		var stats []HouseStats
+		var stats []Stats
 		if err := json.Unmarshal(r.Body, &stats); err != nil {
 			errCb(err)
 			return
@@ -139,6 +101,6 @@ func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), errCb cfac.Er
 	}, errCb)
 }
 
-func (h *House) FetchStats(c *colly.Collector, cb func([]HouseStats), errCb cfac.ErrorCallback) {
+func (h *House) FetchStats(c *colly.Collector, cb func([]Stats), errCb cfac.ErrorCallback) {
 	FetchHouseStats(c, h.Ident, cb, errCb)
 }

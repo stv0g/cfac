@@ -23,11 +23,6 @@ var (
 	}
 )
 
-type Occupancy struct {
-	Utilization float64
-	LastUpdated time.Time
-}
-
 type Callback func(u Occupancy)
 
 func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
@@ -67,7 +62,7 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 		}
 
 		cb(Occupancy{
-			Utilization: float64(utilization),
+			Occupancy:   float64(utilization),
 			LastUpdated: lastUpdated,
 		})
 	})

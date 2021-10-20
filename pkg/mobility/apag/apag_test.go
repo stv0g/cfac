@@ -25,7 +25,7 @@ func TestFetchAllHouseStats(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	apag.FetchAllHouseStats(c.Collector, func(h []apag.HouseStats) {
+	apag.FetchAllHouseStats(c.Collector, func(h []apag.Stats) {
 		for _, i := range h {
 			t.Logf("%#+v", i)
 		}
