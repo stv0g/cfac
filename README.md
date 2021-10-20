@@ -104,6 +104,9 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 ## Roadmap: future ideas
 
+- [Ratsinformations System Aachen](https://ratsinfo.aachen.de/bi/oparl/1.0/bodies.asp?id=1)
+  - Statistiken..
+
 ### Opening hours
 
 - Lieferando:
