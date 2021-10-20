@@ -1,8 +1,7 @@
 package cfac
 
-type Metrics map[string]Metric
+type Measurement interface{}
 
-type Metric interface {
-	String() string
-	Float() float64
+type Measurable interface {
+	Fetch()
 }

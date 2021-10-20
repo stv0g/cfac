@@ -40,7 +40,7 @@ func TestFetchAllHousesWithStats(t *testing.T) {
 
 	apag.FetchAllHousesWithStats(c.Collector, func(h []apag.House) {
 		for _, i := range h {
-			t.Logf("%#+v", i)
+			t.Logf("%+v", i)
 		}
 
 		c.MarkHandled()

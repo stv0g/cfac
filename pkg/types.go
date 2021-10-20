@@ -1,16 +1,12 @@
 package cfac
 
-import "math"
+import "github.com/gocolly/colly/v2"
 
-const (
-	EarthRadius = 6378100 // in meters
-)
+type ErrorCallback func(error)
+type MeasurementsCallback func(m []Measurement)
+type NewMeasurable func(c *colly.Collector, cb MeasurementsCallback, errCb ErrorCallback) Measurable
 
-type City struct {
-	Coordinate  Coordinate
-	BoundingBox BoundingBox
-	AGS         string
-}
+type Percent int
 
 type Coordinate struct {
 	Latitude  float64
@@ -22,36 +18,34 @@ type BoundingBox struct {
 	SouthEast Coordinate
 }
 
-type ErrorCallback func(error)
-
-type Percent int
-
-// Distance function returns the distance (in meters) between two points of
-//     a given longitude and latitude relatively accurately (using a spherical
-//     approximation of the Earth) through the Haversin Distance Formula for
-//     great arc distance on a sphere with accuracy for small distances
-//
-// point coordinates are supplied in degrees and converted into rad. in the func
-//
-// distance returned is METERS!!!!!!
-// http://en.wikipedia.org/wiki/Haversine_formula
-func (c Coordinate) DistanceTo(to Coordinate) float64 {
-
-	// convert to radians
-	// must cast radius as float to multiply later
-	var la1, lo1, la2, lo2 float64
-	la1 = c.Latitude * math.Pi / 180
-	lo1 = c.Longitude * math.Pi / 180
-	la2 = to.Latitude * math.Pi / 180
-	lo2 = to.Longitude * math.Pi / 180
-
-	// calculate
-	h := hsin(la2-la1) + math.Cos(la1)*math.Cos(la2)*hsin(lo2-lo1)
-
-	return 2 * EarthRadius * math.Asin(math.Sqrt(h))
+type Object struct {
+	Name     string     `json:"name"`
+	Location Coordinate `json:"location"`
 }
 
-// haversin(θ) function
-func hsin(theta float64) float64 {
-	return math.Pow(math.Sin(theta/2), 2)
+type Occupancy struct {
+	Occupancy float64 `json:"occupancy"`
+	Capacity  float64 `json:"capacity"`
+}
+
+type OccupancyPercentage struct {
+	Occupancy Percent `json:"occupancy_percent"`
+}
+
+type BaseMeasurement struct {
+	Name string `json:"name"`
+	Time uint64 `json:"time"`
+
+	Object Object `json:"object"`
+	Source string `json:"source"`
+}
+
+type OccupancyMeasurement struct {
+	BaseMeasurement
+	Occupancy
+}
+
+type OccupancyPercentMeasurement struct {
+	BaseMeasurement
+	OccupancyPercentage
 }

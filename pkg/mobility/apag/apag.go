@@ -3,11 +3,8 @@ package apag
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/url"
 	"regexp"
-	"strings"
-	"time"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -82,17 +79,12 @@ func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), errCb c
 
 func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallback) {
 	FetchAllHouses(c, func(houses []House) {
-		FetchAllHouseStats(c, func(houseStats []HouseStats) {
-			houseMap := map[string]*House{}
-			for _, h := range houses {
-				houseMap[h.Ident] = &h
-			}
-
-			for _, hs := range houseStats {
-				if h, ok := houseMap[hs.Ident]; ok {
-					h.Stats = &hs
-				} else {
-					log.Printf("failed to find matching house for ident: %s", hs.Ident)
+		FetchAllHouseStats(c, func(houseStats []Stats) {
+			for j, hs := range houseStats {
+				for i, h := range houses {
+					if h.Ident == hs.Ident {
+						houses[i].Stats = &houseStats[j]
+					}
 				}
 			}
 

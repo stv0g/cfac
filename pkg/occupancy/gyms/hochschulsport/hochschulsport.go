@@ -21,6 +21,13 @@ var (
 		"Referer": UrlReferer,
 		"Accept":  "image/*",
 	}
+	RWTHGym = cfac.Object{
+		Name: "RWTHgym",
+		Location: cfac.Coordinate{
+			Latitude:  50.779244,
+			Longitude: 6.068629,
+		},
+	}
 )
 
 type Callback func(u Occupancy)
