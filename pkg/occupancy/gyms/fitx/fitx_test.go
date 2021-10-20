@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	th "github.com/stv0g/cfac/internal/testing"
-	cfac "github.com/stv0g/cfac/pkg"
+	"github.com/stv0g/cfac/pkg/city"
 	"github.com/stv0g/cfac/pkg/occupancy/gyms/fitx"
 )
 
@@ -12,7 +12,7 @@ func TestFetchStudios(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	fitx.FetchStudios(c.Collector, cfac.Aachen.Coordinate, func(s []fitx.Studio) {
+	fitx.FetchStudios(c.Collector, city.Aachen.Coordinate, func(s []fitx.Studio) {
 		t.Logf("Found studios: %+v", s)
 
 		found := false
