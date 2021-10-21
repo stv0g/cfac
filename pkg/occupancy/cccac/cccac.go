@@ -20,21 +20,11 @@ const (
 	UrlApiCurrentStatus = UrlApi + "/status/current?public"
 )
 
-type ResponseCurrentStatus struct {
-	Changed Status `json:"changed"`
-}
-
-type Status struct {
-	Status string `json:"status"`
-	Time   uint   `json:"time"`
-	Type   string `json:"type"`
-}
-
-func FetchStatus(c *colly.Collector, cb func(sts Status), errCb cfac.ErrorCallback) {
+func FetchStatus(c *colly.Collector, cb func(sts Status), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var resp ResponseCurrentStatus
 		if err := json.Unmarshal(r.Body, &resp); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 

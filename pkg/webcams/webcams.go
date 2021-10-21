@@ -16,22 +16,6 @@ var (
 	Webcams []Webcam
 )
 
-type WebcamType int
-
-type Webcam struct {
-	Type       WebcamType
-	StillImage *url.URL
-	LiveStream *url.URL
-
-	Title    string
-	SubTitle string
-
-	Source *url.URL
-
-	UpdateRate time.Duration
-	Delay      time.Duration
-}
-
 func parseURL(u string) *url.URL {
 	i, _ := url.Parse(u)
 	return i

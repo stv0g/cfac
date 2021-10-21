@@ -12,11 +12,6 @@ const (
 	Url = "https://www.spielbank-aachen.de/"
 )
 
-type Occupancy struct {
-	Utilization float64
-	LastUpdated time.Time
-}
-
 type Callback func(u Occupancy)
 
 func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {

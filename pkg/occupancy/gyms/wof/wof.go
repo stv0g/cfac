@@ -13,13 +13,6 @@ const (
 	Url = "http://besucher.wof-fitness.de/"
 )
 
-type Studio struct {
-	Name        string
-	Location    string
-	Occupancy   cfac.Percent
-	LastUpdated time.Time
-}
-
 type Callback func(studios Studio)
 
 func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {

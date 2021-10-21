@@ -12,13 +12,6 @@ const (
 	Url = "https://www.carolus-thermen.de/en/thermalbath/#occupation"
 )
 
-type Occupancy struct {
-	ThermalBath cfac.Percent
-	Sauna       cfac.Percent
-	Parking     cfac.Percent
-	LastUpdated time.Time
-}
-
 type Callback func(o Occupancy)
 
 func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
