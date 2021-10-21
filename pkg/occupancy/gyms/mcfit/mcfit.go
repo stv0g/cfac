@@ -31,11 +31,11 @@ func (s *Studio) DistanceTo(to cfac.Coordinate) float64 {
 	return loc.DistanceTo(to)
 }
 
-func FetchStudios(c *colly.Collector, cb func(s []Studio), errCb cfac.ErrorCallback) {
+func FetchStudios(c *colly.Collector, cb func(s []Studio), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var resp ResponseStudios
 		if err := json.Unmarshal(r.Body, &resp); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -45,7 +45,7 @@ func FetchStudios(c *colly.Collector, cb func(s []Studio), errCb cfac.ErrorCallb
 	c.Visit(UrlStudios)
 }
 
-func FetchStudiosByCoordinates(c *colly.Collector, co cfac.Coordinate, dist float64, cb func(s []Studio), errCb cfac.ErrorCallback) {
+func FetchStudiosByCoordinates(c *colly.Collector, co cfac.Coordinate, dist float64, cb func(s []Studio), ecb cfac.ErrorCallback) {
 	FetchStudios(c, func(studios []Studio) {
 		sort.Slice(studios, func(i, j int) bool {
 			return studios[i].DistanceTo(co) < studios[j].DistanceTo(co)
@@ -63,14 +63,14 @@ func FetchStudiosByCoordinates(c *colly.Collector, co cfac.Coordinate, dist floa
 		} else {
 			cb(studios)
 		}
-	}, errCb)
+	}, ecb)
 }
 
-func FetchOccupancy(c *colly.Collector, studioID int, cb func(o ResponseOccupancy), errCb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, studioID int, cb func(o ResponseOccupancy), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var o ResponseOccupancy
 		if err := json.Unmarshal(r.Body, &o); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -84,12 +84,12 @@ func FetchOccupancy(c *colly.Collector, studioID int, cb func(o ResponseOccupanc
 	c.Visit(UrlOccupancy + "?" + q.Encode())
 }
 
-func FetchCurrentOccupancy(c *colly.Collector, studioID int, cb func(o Occupancy), errCb cfac.ErrorCallback) {
+func FetchCurrentOccupancy(c *colly.Collector, studioID int, cb func(o Occupancy), ecb cfac.ErrorCallback) {
 	FetchOccupancy(c, studioID, func(ol ResponseOccupancy) {
 		for _, o := range ol.Items {
 			if o.IsCurrent {
 				cb(o)
 			}
 		}
-	}, errCb)
+	}, ecb)
 }

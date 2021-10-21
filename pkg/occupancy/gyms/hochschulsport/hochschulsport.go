@@ -32,24 +32,24 @@ var (
 
 type Callback func(u Occupancy)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		client := gosseract.NewClient()
 		defer client.Close()
 
 		if err := client.SetWhitelist("0123456789"); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
 		if err := client.SetImageFromBytes(r.Body); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
 		text, err := client.Text()
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -57,14 +57,14 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 
 		utilization, err := strconv.ParseUint(text, 10, 64)
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
 		lastUpdatedStr := r.Headers.Get("Date")
 		lastUpdated, err := time.Parse(time.RFC1123, lastUpdatedStr)
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -76,7 +76,7 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 
 	url, err := url.Parse(Url)
 	if err != nil {
-		errCb(err)
+		ecb(err)
 		return
 	}
 

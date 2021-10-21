@@ -11,7 +11,7 @@ func TestMedaixOccupancy(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	medaix.FetchOccupancy(c.Collector, func(p medaix.VisitorCounter) {
+	medaix.FetchOccupancy(1, c.Collector, func(p medaix.VisitorCounter) {
 		t.Logf("Occupancy: %+v\n", p)
 
 		c.MarkHandled()

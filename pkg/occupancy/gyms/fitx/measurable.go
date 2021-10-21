@@ -19,9 +19,8 @@ func (s *Studio) Measure() []cfac.Measurement {
 					},
 				},
 			},
-			OccupancyPercentage: cfac.OccupancyPercentage{
-				Occupancy: cfac.Percent(s.Workload.Percentage),
-			},
+
+			Occupancy: cfac.Percent(s.Workload.Percentage),
 		},
 	}
 }
@@ -33,19 +32,16 @@ type Measurable struct {
 	errorCallback cfac.ErrorCallback
 }
 
-func NewMeasurable(c *colly.Collector, cb cfac.MeasurementsCallback, errCb cfac.ErrorCallback) cfac.Measurable {
+func NewMeasurable() cfac.Measurable {
 	return &Measurable{
-		studioID:      38,
-		collector:     c,
-		callback:      cb,
-		errorCallback: errCb,
+		studioID: 38,
 	}
 }
 
-func (m *Measurable) Fetch() {
-	FetchStudioWorkload(m.collector, m.studioID, func(studio Studio) {
-		m.callback(studio.Measure())
-	}, m.errorCallback)
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
+	FetchStudioWorkload(c, m.studioID, func(studio Studio) {
+		cb(studio.Measure())
+	}, ecb)
 }
 
 func init() {

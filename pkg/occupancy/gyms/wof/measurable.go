@@ -1,39 +1,36 @@
-package medaix
+package wof
 
 import (
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
 )
 
-type Measurable struct {
-	StudioID int
-}
+type Measurable struct{}
 
-func (s *VisitorCounter) Measure() []cfac.Measurement {
+func (s *Studio) Measure() []cfac.Measurement {
 	return []cfac.Measurement{
 		&cfac.OccupancyPercentMeasurement{
 			BaseMeasurement: cfac.BaseMeasurement{
-				Name:   "occupancy",
-				Source: "fitx",
+				Name: "wof",
+				Time: uint64(s.LastUpdated.UnixMilli()),
+
 				Object: cfac.Object{
 					Name: s.Name,
 				},
 			},
 
-			Occupancy: cfac.Percent(s.Workload.Percentage),
+			Occupancy: s.Occupancy,
 		},
 	}
 }
 
 func NewMeasurable() cfac.Measurable {
-	return &Measurable{
-		StudioID: 38,
-	}
+	return &Measurable{}
 }
 
 func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
-	FetchOccupancy(m.StudioID, c, func(cnt VisitorCounter) {
-		cb(cnt.Measure())
+	FetchOccupancy(c, func(s Studio) {
+		cb(s.Measure())
 	}, ecb)
 }
 

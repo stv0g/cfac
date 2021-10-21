@@ -20,9 +20,8 @@ func (s *Studio) Measure() []cfac.Measurement {
 					},
 				},
 			},
-			// OccupancyPercentage: cfac.OccupancyPercentage{
-			// 	Occupancy: cfac.Percent(s.),
-			// },
+
+			// Occupancy: ,
 		},
 	}
 }
@@ -33,15 +32,14 @@ func NewMeasurable() cfac.Measurable {
 	return &Measurable{}
 }
 
-func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, errCb cfac.ErrorCallback) {
-	c.
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
 	FetchStudiosByCoordinates(c, city.Aachen.Coordinate, 10e3, func(s []Studio) {
 		m := []cfac.Measurement{}
 		for _, t := range s {
 			m = append(m, t.Measure()...)
 		}
 		cb(m)
-	}, errCb)
+	}, ecb)
 }
 
 func init() {

@@ -12,9 +12,16 @@ const (
 	Url = "https://www.spielbank-aachen.de/"
 )
 
+var (
+	SpielbankAachen = cfac.Object{
+		Name:     "Spielbank Aachen",
+		Location: cfac.Coordinate{}, // TODO: coordinates
+	}
+)
+
 type Callback func(u Occupancy)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	c.OnHTML("div.metric", func(h *colly.HTMLElement) {
 		ratio, err := strconv.ParseFloat(h.Attr("data-ratio"), 32)
 		if err != nil {
@@ -25,13 +32,13 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 
 		loc, err := time.LoadLocation("Europe/Berlin")
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
 		updated, err := time.ParseInLocation("Stand: 02.01.2006, 15:04 Uhr", timeStr, loc)
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 

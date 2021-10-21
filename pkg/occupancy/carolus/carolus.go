@@ -2,7 +2,6 @@ package carolus
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -14,7 +13,7 @@ const (
 
 type Callback func(o Occupancy)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	c.OnHTML("ul.occupancy", func(h *colly.HTMLElement) {
 
 		occupancyThermalBathStr := h.ChildAttrs("div[data-name=\"Thermal Bath\"]", "data-percent")[0]
@@ -27,7 +26,7 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 
 		lastUpdated, err := cfac.LastUpdated(h.Response)
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 

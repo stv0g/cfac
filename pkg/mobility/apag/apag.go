@@ -16,13 +16,13 @@ const (
 	UrlChartXS = UrlApi + "?q={ident}&d=chartxs&max={max}"
 )
 
-func FetchAllHouses(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallback) {
+func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var re = regexp.MustCompile(`(?m)var houses = (.*);$`)
 
 		m := re.FindSubmatch(r.Body)
 		if m == nil {
-			errCb(errors.New("failed to find house list"))
+			ecb(errors.New("failed to find house list"))
 			return
 		}
 
@@ -34,7 +34,7 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallba
 
 		var houseMap map[string]House
 		if err := json.Unmarshal(j, &houseMap); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -50,15 +50,15 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallba
 	c.Visit(Url)
 }
 
-func FetchAllHouseStats(c *colly.Collector, cb func([]Stats), errCb cfac.ErrorCallback) {
-	FetchHouseStats(c, "", cb, errCb)
+func FetchAllHouseStats(c *colly.Collector, cb func([]Stats), ecb cfac.ErrorCallback) {
+	FetchHouseStats(c, "", cb, ecb)
 }
 
-func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), errCb cfac.ErrorCallback) {
+func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var stats []Stats
 		if err := json.Unmarshal(r.Body, &stats); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -77,7 +77,7 @@ func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), errCb c
 	c.Visit(UrlApi + "?" + q.Encode())
 }
 
-func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), errCb cfac.ErrorCallback) {
+func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) {
 	FetchAllHouses(c, func(houses []House) {
 		FetchAllHouseStats(c, func(houseStats []Stats) {
 			for j, hs := range houseStats {
@@ -89,10 +89,10 @@ func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), errCb cfac.Er
 			}
 
 			cb(houses)
-		}, errCb)
-	}, errCb)
+		}, ecb)
+	}, ecb)
 }
 
-func (h *House) FetchStats(c *colly.Collector, cb func([]Stats), errCb cfac.ErrorCallback) {
-	FetchHouseStats(c, h.Ident, cb, errCb)
+func (h *House) FetchStats(c *colly.Collector, cb func([]Stats), ecb cfac.ErrorCallback) {
+	FetchHouseStats(c, h.Ident, cb, ecb)
 }

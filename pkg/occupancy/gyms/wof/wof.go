@@ -3,7 +3,6 @@ package wof
 import (
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -15,12 +14,12 @@ const (
 
 type Callback func(studios Studio)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 
 	c.OnHTML("table[id=meineTabelle] tbody", func(e *colly.HTMLElement) {
 		lastUpdated, err := cfac.LastUpdated(e.Response)
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -31,7 +30,7 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 			occupancyStr := strings.TrimSuffix(util, "%")
 			occupancy, err := strconv.Atoi(occupancyStr)
 			if err != nil {
-				errCb(err)
+				ecb(err)
 				return
 			}
 

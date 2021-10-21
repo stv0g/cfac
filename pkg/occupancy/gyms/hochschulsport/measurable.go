@@ -5,24 +5,16 @@ import (
 	cfac "github.com/stv0g/cfac/pkg"
 )
 
-type Measurable struct {
-	collector     *colly.Collector
-	callback      cfac.MeasurementsCallback
-	errorCallback cfac.ErrorCallback
+type Measurable struct{}
+
+func NewMeasurable() cfac.Measurable {
+	return &Measurable{}
 }
 
-func NewMeasurable(c *colly.Collector, cb cfac.MeasurementsCallback, errCb cfac.ErrorCallback) cfac.Measurable {
-	return &Measurable{
-		collector:     c,
-		callback:      cb,
-		errorCallback: errCb,
-	}
-}
-
-func (m *Measurable) Fetch() {
-	FetchOccupancy(m.collector, func(o Occupancy) {
-		m.callback(o.Measure())
-	}, m.errorCallback)
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
+	FetchOccupancy(c, func(o Occupancy) {
+		cb(o.Measure())
+	}, ecb)
 }
 
 func (o Occupancy) Measure() []cfac.Measurement {
@@ -33,9 +25,8 @@ func (o Occupancy) Measure() []cfac.Measurement {
 				Time:   uint64(o.LastUpdated.UnixMilli()),
 				Object: RWTHGym,
 			},
-			Occupancy: cfac.Occupancy{
-				Occupancy: o.Occupancy,
-			},
+
+			Occupancy: o.Occupancy,
 		},
 	}
 }

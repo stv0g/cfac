@@ -36,9 +36,7 @@ func requestData(id int) map[string]string {
 	}
 }
 
-func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
-	id := 1
-
+func FetchOccupancy(id int, c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var counter VisitorCounter
 
@@ -50,7 +48,7 @@ func FetchOccupancy(c *colly.Collector, cb Callback, errCb cfac.ErrorCallback) {
 
 		err := json.Unmarshal(r.Body, &counter)
 		if err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 

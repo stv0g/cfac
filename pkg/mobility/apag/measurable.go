@@ -15,39 +15,27 @@ func (h *House) Measure() []cfac.Measurement {
 					Name: h.Title,
 				},
 			},
-			Occupancy: cfac.Occupancy{
-				Occupancy: float64(h.Stats.Count),
-				Capacity:  float64(h.Capacity),
-			},
+
+			Occupancy: float64(h.Stats.Count),
+			Capacity:  float64(h.Capacity),
 		},
 	}
 }
 
-type Measurable struct {
-	cfac.Measurable
+type Measurable struct{}
 
-	collector *colly.Collector
-
-	errorCallback cfac.ErrorCallback
-	callback      cfac.MeasurementsCallback
+func NewMeasurable() cfac.Measurable {
+	return &Measurable{}
 }
 
-func NewMeasurable(c *colly.Collector, cb cfac.MeasurementsCallback, errCb cfac.ErrorCallback) cfac.Measurable {
-	return &Measurable{
-		collector:     c,
-		callback:      cb,
-		errorCallback: errCb,
-	}
-}
-
-func (m *Measurable) Fetch() {
-	FetchAllHousesWithStats(m.collector, func(houses []House) {
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
+	FetchAllHousesWithStats(c, func(houses []House) {
 		measurements := []cfac.Measurement{}
 		for _, h := range houses {
 			measurements = append(measurements, h.Measure()...)
 		}
-		m.callback(measurements)
-	}, m.errorCallback)
+		cb(measurements)
+	}, ecb)
 }
 
 func init() {

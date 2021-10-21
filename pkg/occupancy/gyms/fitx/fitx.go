@@ -27,14 +27,14 @@ var (
 	}
 )
 
-func FetchStudios(c *colly.Collector, coords cfac.Coordinate, cb func(s []Studio), errCb cfac.ErrorCallback) {
+func FetchStudios(c *colly.Collector, coords cfac.Coordinate, cb func(s []Studio), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var resp struct {
 			Results []string `json:"result"`
 		}
 		if err := json.Unmarshal(r.Body, &resp); err != nil {
 			cfac.DumpResponse(r)
-			errCb(err)
+			ecb(err)
 			return
 		}
 
@@ -42,7 +42,7 @@ func FetchStudios(c *colly.Collector, coords cfac.Coordinate, cb func(s []Studio
 		for _, result := range resp.Results {
 			var studio Studio
 			if err := json.Unmarshal([]byte(result), &studio); err != nil {
-				errCb(err)
+				ecb(err)
 				continue
 			}
 
@@ -58,23 +58,23 @@ func FetchStudios(c *colly.Collector, coords cfac.Coordinate, cb func(s []Studio
 	})
 }
 
-func FetchStudioWorkload(c *colly.Collector, studioID int, cb func(s Studio), errCb cfac.ErrorCallback) {
+func FetchStudioWorkload(c *colly.Collector, studioID int, cb func(s Studio), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
 		var strings []string
 		var studio Studio
 
 		if err := json.Unmarshal(r.Body, &strings); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
 		if len(strings) != 1 {
-			errCb(errors.New("malformed response"))
+			ecb(errors.New("malformed response"))
 			return
 		}
 
 		if err := json.Unmarshal([]byte(strings[0]), &studio); err != nil {
-			errCb(err)
+			ecb(err)
 			return
 		}
 
