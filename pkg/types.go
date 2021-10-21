@@ -1,10 +1,8 @@
 package cfac
 
-import "github.com/gocolly/colly/v2"
-
 type ErrorCallback func(error)
 type MeasurementsCallback func(m []Measurement)
-type NewMeasurable func(c *colly.Collector, cb MeasurementsCallback, errCb ErrorCallback) Measurable
+type NewMeasurable func() Measurable
 
 type Percent int
 
@@ -23,15 +21,6 @@ type Object struct {
 	Location Coordinate `json:"location"`
 }
 
-type Occupancy struct {
-	Occupancy float64 `json:"occupancy"`
-	Capacity  float64 `json:"capacity"`
-}
-
-type OccupancyPercentage struct {
-	Occupancy Percent `json:"occupancy_percent"`
-}
-
 type BaseMeasurement struct {
 	Name string `json:"name"`
 	Time uint64 `json:"time"`
@@ -42,10 +31,25 @@ type BaseMeasurement struct {
 
 type OccupancyMeasurement struct {
 	BaseMeasurement
-	Occupancy
+
+	Occupancy float64 `json:"occupancy"`
+	Capacity  float64 `json:"capacity"`
 }
 
 type OccupancyPercentMeasurement struct {
 	BaseMeasurement
-	OccupancyPercentage
+
+	Occupancy Percent `json:"occupancy_percent"`
+}
+
+type TemperatureMeasurment struct {
+	BaseMeasurement
+
+	Temperature float64 `json:"temperature"`
+}
+
+type CounterMeasurement struct {
+	BaseMeasurement
+
+	Count uint64 `json:"count"`
 }
