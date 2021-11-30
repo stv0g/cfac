@@ -88,45 +88,30 @@ type NodeStatisticsProcesses struct {
 }
 
 type NodeStatisticsTraffic struct {
-	Tx struct {
-		Bytes   int `json:"bytes"`
-		Packets int `json:"packets"`
-		Dropped int `json:"dropped"`
-	} `json:"tx"`
-	Rx struct {
-		Bytes   int `json:"bytes"`
-		Packets int `json:"packets"`
-	} `json:"rx"`
-	Forward struct {
-		Bytes   int `json:"bytes"`
-		Packets int `json:"packets"`
-	} `json:"forward"`
-	MgmtTx struct {
-		Bytes   int `json:"bytes"`
-		Packets int `json:"packets"`
-	} `json:"mgmt_tx"`
-	MgmtRx struct {
-		Bytes   int `json:"bytes"`
-		Packets int `json:"packets"`
-	} `json:"mgmt_rx"`
+	Tx      TrafficStatistics `json:"tx"`
+	Rx      TrafficStatistics `json:"rx"`
+	Forward TrafficStatistics `json:"forward"`
+	MgmtTx  TrafficStatistics `json:"mgmt_tx"`
+	MgmtRx  TrafficStatistics `json:"mgmt_rx"`
+}
+
+type TrafficStatistics struct {
+	Bytes   int `json:"bytes"`
+	Packets int `json:"packets"`
+	Dropped int `json:"dropped"`
 }
 
 type NodeStatisticsMeshVPN struct {
 	Groups struct {
 		Backbone struct {
-			Peers struct {
-				Aachen01 struct {
-					Established float64 `json:"established"`
-				} `json:"aachen01"`
-				Aachen02 interface{} `json:"aachen02"`
-				Aachen03 interface{} `json:"aachen03"`
-				Aachen04 interface{} `json:"aachen04"`
-				Aachen05 interface{} `json:"aachen05"`
-				Aachen06 interface{} `json:"aachen06"`
-			} `json:"peers"`
-			Groups interface{} `json:"groups"`
+			Peers  map[string]PeerStatistics `json:"peers"`
+			Groups map[string]PeerStatistics `json:"groups"`
 		} `json:"backbone"`
 	} `json:"groups"`
+}
+
+type PeerStatistics struct {
+	Established float64 `json:"established"`
 }
 
 type NodeStatistics struct {
@@ -160,7 +145,7 @@ type NodeInfoNetwork struct {
 }
 
 type NodeInfoSoftware struct {
-	Autoupdater struct {
+	AutoUpdater struct {
 		Enabled bool   `json:"enabled"`
 		Branch  string `json:"branch"`
 	} `json:"autoupdater"`
@@ -216,35 +201,39 @@ type Location struct {
 }
 
 type NodeMeshviewer struct {
-	Firstseen      string   `json:"firstseen"`
-	Lastseen       string   `json:"lastseen"`
-	IsOnline       bool     `json:"is_online"`
-	IsGateway      bool     `json:"is_gateway"`
-	Clients        int      `json:"clients"`
-	ClientsWifi24  int      `json:"clients_wifi24"`
-	ClientsWifi5   int      `json:"clients_wifi5"`
-	ClientsOther   int      `json:"clients_other"`
-	RootfsUsage    float64  `json:"rootfs_usage"`
-	Loadavg        int      `json:"loadavg"`
-	MemoryUsage    float64  `json:"memory_usage"`
-	Uptime         string   `json:"uptime"`
-	GatewayNexthop string   `json:"gateway_nexthop,omitempty"`
-	Gateway        string   `json:"gateway,omitempty"`
-	Gateway6       string   `json:"gateway6,omitempty"`
-	NodeID         string   `json:"node_id"`
-	Mac            string   `json:"mac"`
-	Addresses      []string `json:"addresses"`
-	Domain         string   `json:"domain"`
-	Hostname       string   `json:"hostname"`
-	Firmware       struct {
-		Base    string `json:"base"`
-		Release string `json:"release"`
-	} `json:"firmware"`
-	Autoupdater struct {
-		Enabled bool   `json:"enabled"`
-		Branch  string `json:"branch"`
-	} `json:"autoupdater"`
-	Nproc    int      `json:"nproc"`
-	Model    string   `json:"model,omitempty"`
-	Location Location `json:"location,omitempty"`
+	Firstseen      string      `json:"firstseen"`
+	Lastseen       string      `json:"lastseen"`
+	IsOnline       bool        `json:"is_online"`
+	IsGateway      bool        `json:"is_gateway"`
+	Clients        int         `json:"clients"`
+	ClientsWifi24  int         `json:"clients_wifi24"`
+	ClientsWifi5   int         `json:"clients_wifi5"`
+	ClientsOther   int         `json:"clients_other"`
+	RootfsUsage    float64     `json:"rootfs_usage"`
+	Loadavg        int         `json:"loadavg"`
+	MemoryUsage    float64     `json:"memory_usage"`
+	Uptime         string      `json:"uptime"`
+	GatewayNexthop string      `json:"gateway_nexthop,omitempty"`
+	Gateway        string      `json:"gateway,omitempty"`
+	Gateway6       string      `json:"gateway6,omitempty"`
+	NodeID         string      `json:"node_id"`
+	Mac            string      `json:"mac"`
+	Addresses      []string    `json:"addresses"`
+	Domain         string      `json:"domain"`
+	Hostname       string      `json:"hostname"`
+	Firmware       Firmware    `json:"firmware"`
+	AutoUpdater    AutoUpdater `json:"autoupdater"`
+	Nproc          int         `json:"nproc"`
+	Model          string      `json:"model,omitempty"`
+	Location       Location    `json:"location,omitempty"`
+}
+
+type Firmware struct {
+	Base    string `json:"base"`
+	Release string `json:"release"`
+}
+
+type AutoUpdater struct {
+	Enabled bool   `json:"enabled"`
+	Branch  string `json:"branch"`
 }
