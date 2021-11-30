@@ -1,6 +1,6 @@
 package gmcmap
 
-// curl -o complete-gmcmap-mapdevices.json https://www.gmcmap.com/AJAX_load_time.asp\?OffSet\=0\&Limit\=2147483647\&dataRange\=100000\&timeZone\=2
+// curl 'https://www.gmcmap.com/AJAX_load_time.asp?OffSet=0&Limit=2147483647&dataRange=100000&timeZone=0'
 
 const (
 	UrlApi            = "http://www.gmcmap.com"

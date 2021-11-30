@@ -15,12 +15,12 @@ func LastUpdated(r *colly.Response) (time.Time, error) {
 	return time.Parse(time.RFC1123, lastUpdatedStr)
 }
 
-type UrlArgs map[string]string
+type UrlArgs map[string]interface{}
 
 func PrepareUrl(tpl string, args UrlArgs) string {
 	oldnew := []string{}
 	for k, v := range args {
-		oldnew = append(oldnew, fmt.Sprintf("{%s}", k), v)
+		oldnew = append(oldnew, fmt.Sprintf("{%s}", k), fmt.Sprintf("%v", v))
 	}
 
 	r := strings.NewReplacer(oldnew...)
