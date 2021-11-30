@@ -22,12 +22,12 @@ type Station struct {
 	ID            int       `json:"id"`
 	StationID     string    `json:"station_id"`
 	Timestamp     time.Time `json:"timestamp"`
-	Temperature   int       `json:"temperature"`
-	Humidity      int       `json:"humidity"`
+	Temperature   float64   `json:"temperature"`
+	Humidity      float64   `json:"humidity"`
 	Dewpoint      float64   `json:"dewpoint"`
 	Windchill     float64   `json:"windchill"`
 	AirPressure   float64   `json:"air_pressure"`
-	Rain1Hour     int       `json:"rain_1_hour"`
+	Rain1Hour     float64   `json:"rain_1_hour"`
 	Rain24Hour    float64   `json:"rain_24_hour"`
 	RainDay       int       `json:"rain_day"`
 	WindSpeed     float64   `json:"wind_speed"`
@@ -35,7 +35,7 @@ type Station struct {
 	WindDirection int       `json:"wind_direction"`
 	SunshineHours float64   `json:"sunshine_hours"`
 	UvIndex       float64   `json:"uv_index"`
-	Luminosity    int       `json:"luminosity"`
-	SnowHeight    int       `json:"snow_height"`
-	CloudBase     int       `json:"cloud_base"`
+	Luminosity    float64   `json:"luminosity"`
+	SnowHeight    float64   `json:"snow_height"`
+	CloudBase     float64   `json:"cloud_base"`
 }
