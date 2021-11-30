@@ -1,8 +1,8 @@
 package blutspende
 
 import (
+	"encoding/json"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -10,32 +10,33 @@ import (
 )
 
 const (
-	Url                 = "https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/" // +"2020-08/"
 	UrlApi              = "https://balu-api.ukaachen.de/v1"
 	UrlApiLocations     = UrlApi + "/locations"
 	UrlApiDonationDates = UrlApi + "/donationdates"
+	UrlSpendePegelStat  = UrlApi + "/spendepegel-stat"
 )
 
-func FetchPegel(c *colly.Collector, cb func(p Pegel), ecb cfac.ErrorCallback) {
-	FetchPegelTime(c, time.Now(), cb, ecb)
-}
+func FetchPegel(c *colly.Collector, cb func(p SpendePegelStats), ecb cfac.ErrorCallback) {
+	c.OnResponse(func(r *colly.Response) {
+		var resp ResponseSpendePegelStats
 
-func FetchPegelTime(c *colly.Collector, t time.Time, cb func(p Pegel), ecb cfac.ErrorCallback) {
+		if err := json.Unmarshal(r.Body, &resp); err != nil {
+			ecb(err)
+			return
+		}
 
-	c.OnHTML("div.drop-donations", func(h *colly.HTMLElement) {
-		donations := h.Text
-		donations = strings.ReplaceAll(donations, ".", "")
-		dontationsCounter, err := strconv.Atoi(donations)
-
+		donations, err := strconv.Atoi(resp.Label)
 		if err != nil {
 			ecb(err)
 			return
 		}
 
-		cb(Pegel{
-			Donations: dontationsCounter,
+		cb(SpendePegelStats{
+			FillPercentage: resp.Fill,
+			Donations:      donations,
+			LastUpdated:    time.Now(),
 		})
 	})
 
-	c.Visit(Url + t.Format("2006-01"))
+	c.Visit(UrlSpendePegelStat)
 }

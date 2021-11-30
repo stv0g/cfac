@@ -38,3 +38,9 @@ type Location struct {
 		Md string `json:"md"`
 	} `json:"description"`
 }
+
+type SpendePegelStats struct {
+	FillPercentage float64
+	Donations      int
+	LastUpdated    time.Time
+}
