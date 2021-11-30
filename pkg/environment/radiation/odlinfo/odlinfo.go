@@ -1,40 +1,69 @@
 package odlinfo
 
-// curl 'https://odlinfo.bfs.de/json2d69b40fc043fb302fc327c5424ec205/stamm.json' \
-//   -H 'sec-ch-ua: "Chromium";v="93", " Not;A Brand";v="99"' \
-//   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
-//   -H 'Referer: https://odlinfo.bfs.de/DE/aktuelles/messstelle/053130003.html' \
-//   -H 'X-Requested-With: XMLHttpRequest' \
-//   -H 'sec-ch-ua-mobile: ?0' \
-//   -H 'User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36' \
-//   -H 'sec-ch-ua-platform: "Linux"' \
-//   --compressed
+import (
+	"encoding/json"
 
-// https://odlinfo.bfs.de/DE/aktuelles/messstelle/053130003.html
+	"github.com/gocolly/colly/v2"
+	cfac "github.com/stv0g/cfac/pkg"
+)
 
-type StammInfo struct {
-	Ort    string  `json:"ort"`
-	Kenn   string  `json:"kenn"`
-	Plz    string  `json:"plz"`
-	Status int     `json:"status"`
-	Kid    int     `json:"kid"`
-	Hoehe  int     `json:"hoehe"`
-	Lon    float64 `json:"lon"`
-	Lat    float64 `json:"lat"`
-	Mw     float64 `json:"mw"`
+const (
+	UrlApi            = "https://odlinfo.bfs.de/json"
+	UrlApiStatistics  = UrlApi + "/stat.json"
+	UrlApiStationList = UrlApi + "/stamm.json"
+	UrlApiStationData = UrlApi + "/{kenn}.json"
+)
+
+type Callback func(Statistics)
+
+func FetchStatistics(c *colly.Collector, cb func(Statistics), ecb cfac.ErrorCallback) {
+	c.OnResponse(func(r *colly.Response) {
+		var stat Statistics
+
+		if err := json.Unmarshal(r.Body, &stat); err != nil {
+			ecb(err)
+			return
+		}
+
+		cb(stat)
+	})
+
+	c.Visit(UrlApiStatistics)
 }
 
-type StammDaten struct {
-	Stamm StammInfo `json:"stamm"`
-	Mw1H  struct {
-		T  []string      `json:"t"`
-		Mw []float64     `json:"mw"`
-		Ps []int         `json:"ps"`
-		Tr []string      `json:"tr"`
-		R  []interface{} `json:"r"`
-	} `json:"mw1h"`
-	Mw24H struct {
-		T  []string  `json:"t"`
-		Mw []float64 `json:"mw"`
-	} `json:"mw24h"`
+func FetchStations(c *colly.Collector, cb func(StationInfo), ecb cfac.ErrorCallback) {
+	c.OnResponse(func(r *colly.Response) {
+		var stamm ResponseStammInfo
+
+		if err := json.Unmarshal(r.Body, &stamm); err != nil {
+			ecb(err)
+			return
+		}
+
+		for id, s := range stamm {
+			s.ID = id
+			cb(s)
+		}
+	})
+
+	c.Visit(UrlApiStationList)
+}
+
+func FetchStationData(kenn string, c *colly.Collector, cb func(StationData), ecb cfac.ErrorCallback) {
+	c.OnResponse(func(r *colly.Response) {
+		var data StationData
+
+		if err := json.Unmarshal(r.Body, &data); err != nil {
+			ecb(err)
+			return
+		}
+
+		cb(data)
+	})
+
+	url := cfac.PrepareUrl(UrlApiStationData, cfac.UrlArgs{
+		"kenn": kenn,
+	})
+
+	c.Visit(url)
 }
