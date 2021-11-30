@@ -1,6 +1,8 @@
 package buienalarm
 
-type ResponseForecast struct {
+type ResponseForecast Forecast
+
+type Forecast struct {
 	Success    bool   `json:"success"`
 	Start      int    `json:"start"`
 	StartHuman string `json:"start_human"`
