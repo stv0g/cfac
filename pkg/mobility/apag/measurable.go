@@ -13,7 +13,12 @@ func (h *House) Measure() []cfac.Measurement {
 				Source: "apag",
 				Object: cfac.Object{
 					Name: h.Title,
+					Location: &cfac.Coordinate{
+						Latitude:  float64(h.Latitude),
+						Longitude: float64(h.Longitude),
+					},
 				},
+				Time: uint64(h.Stats.Date.UnixMilli()),
 			},
 
 			Occupancy: float64(h.Stats.Count),

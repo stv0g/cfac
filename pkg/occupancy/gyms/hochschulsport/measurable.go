@@ -22,6 +22,7 @@ func (o Occupancy) Measure() []cfac.Measurement {
 		cfac.OccupancyMeasurement{
 			BaseMeasurement: cfac.BaseMeasurement{
 				Name:   "occupancy",
+				Source: "hochschulsport",
 				Time:   uint64(o.LastUpdated.UnixMilli()),
 				Object: RWTHGym,
 			},

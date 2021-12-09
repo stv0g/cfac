@@ -79,7 +79,7 @@ func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfa
 
 func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) {
 	FetchAllHouses(c, func(houses []House) {
-		FetchAllHouseStats(c, func(houseStats []Stats) {
+		FetchAllHouseStats(c.Clone(), func(houseStats []Stats) {
 			for j, hs := range houseStats {
 				for i, h := range houses {
 					if h.Ident == hs.Ident {

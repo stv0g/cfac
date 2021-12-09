@@ -36,9 +36,13 @@ type CustomTime struct {
 }
 
 func (c *CustomTime) UnmarshalJSON(b []byte) error {
-	var err error
-	loc, _ := time.LoadLocation("Europe/Berlin")
+	loc, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		return err
+	}
+
 	s := strings.Trim(string(b), "\"")
 	c.Time, err = time.ParseInLocation("2006-01-02 15:04:05", s, loc)
+
 	return err
 }

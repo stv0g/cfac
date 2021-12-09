@@ -14,8 +14,7 @@ const (
 
 var (
 	SpielbankAachen = cfac.Object{
-		Name:     "Spielbank Aachen",
-		Location: cfac.Coordinate{}, // TODO: coordinates
+		Name: "Spielbank Aachen",
 	}
 )
 

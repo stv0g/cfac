@@ -2,9 +2,8 @@ package medaix
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -14,19 +13,6 @@ const (
 	UrlVisitors = "https://www.medaix.de/counter/visitors.php"
 	UrlCalendar = "https://portal.medaix.de/courseplan/frontend/fillCalendar"
 )
-
-type ResponseVisitors VisitorCounter
-
-type CustomTime struct {
-	time.Time
-}
-
-func (c *CustomTime) UnmarshalJSON(b []byte) error {
-	var err error
-	s := strings.Trim(string(b), "\"")
-	c.Time, err = time.Parse("2006-01-02 15:04:05", s)
-	return err
-}
 
 type Callback func(v VisitorCounter)
 
@@ -43,19 +29,16 @@ func FetchOccupancy(id int, c *colly.Collector, cb Callback, ecb cfac.ErrorCallb
 		// Try to unmarshal to bool which indicates an invalid ID
 		var b bool
 		if err := json.Unmarshal(r.Body, &b); err == nil {
+			ecb(fmt.Errorf("unknown studio: %d", id))
 			return
 		}
 
-		err := json.Unmarshal(r.Body, &counter)
-		if err != nil {
+		if err := json.Unmarshal(r.Body, &counter); err != nil {
 			ecb(err)
 			return
 		}
 
 		cb(counter)
-
-		id++
-		c.Post(UrlVisitors, requestData(id))
 	})
 
 	c.Post(UrlVisitors, requestData(id))

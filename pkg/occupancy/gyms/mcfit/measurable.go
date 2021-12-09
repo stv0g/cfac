@@ -11,17 +11,17 @@ func (s *Studio) Measure() []cfac.Measurement {
 		&cfac.OccupancyPercentMeasurement{
 			BaseMeasurement: cfac.BaseMeasurement{
 				Name:   "occupancy",
-				Source: "fitx",
+				Source: "mcfit",
 				Object: cfac.Object{
 					Name: s.StudioName,
-					Location: cfac.Coordinate{
+					Location: &cfac.Coordinate{
 						Latitude:  s.Address.Latitude,
 						Longitude: s.Address.Longitude,
 					},
 				},
 			},
 
-			// Occupancy: ,
+			Occupancy: s.
 		},
 	}
 }
@@ -33,7 +33,7 @@ func NewMeasurable() cfac.Measurable {
 }
 
 func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
-	FetchStudiosByCoordinates(c, city.Aachen.Coordinate, 10e3, func(s []Studio) {
+	FetchCurrentOccupancy(c, city.Aachen.Coordinate, 10e3, func(s []Studio) {
 		m := []cfac.Measurement{}
 		for _, t := range s {
 			m = append(m, t.Measure()...)

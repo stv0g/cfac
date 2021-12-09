@@ -1,6 +1,8 @@
 package fitx
 
 import (
+	"time"
+
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
 )
@@ -13,11 +15,12 @@ func (s *Studio) Measure() []cfac.Measurement {
 				Source: "fitx",
 				Object: cfac.Object{
 					Name: s.Name,
-					Location: cfac.Coordinate{
+					Location: &cfac.Coordinate{
 						Latitude:  s.Location.Lat,
 						Longitude: s.Location.Lon,
 					},
 				},
+				Time: uint64(time.Now().UnixMilli()),
 			},
 
 			Occupancy: cfac.Percent(s.Workload.Percentage),

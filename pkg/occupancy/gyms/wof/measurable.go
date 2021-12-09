@@ -11,8 +11,9 @@ func (s *Studio) Measure() []cfac.Measurement {
 	return []cfac.Measurement{
 		&cfac.OccupancyPercentMeasurement{
 			BaseMeasurement: cfac.BaseMeasurement{
-				Name: "wof",
-				Time: uint64(s.LastUpdated.UnixMilli()),
+				Name:   "occupancy",
+				Source: "wof",
+				Time:   uint64(s.LastUpdated.UnixMilli()),
 
 				Object: cfac.Object{
 					Name: s.Name,
@@ -35,5 +36,5 @@ func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb
 }
 
 func init() {
-	cfac.RegisterMeasurable("medaix", NewMeasurable)
+	cfac.RegisterMeasurable("wof", NewMeasurable)
 }

@@ -1,40 +1,57 @@
 package medaix
 
 import (
+	"sync"
+	"time"
+
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
 )
 
-type Measurable struct {
-	StudioID int
-}
+type Measurable struct{}
 
-func (s *VisitorCounter) Measure() []cfac.Measurement {
-	return []cfac.Measurement{
-		&cfac.OccupancyPercentMeasurement{
-			BaseMeasurement: cfac.BaseMeasurement{
-				Name:   "occupancy",
-				Source: "fitx",
-				Object: cfac.Object{
-					Name: s.Name,
-				},
+func (s *VisitorCounter) Measure() cfac.Measurement {
+	return &cfac.OccupancyMeasurement{
+		BaseMeasurement: cfac.BaseMeasurement{
+			Name:   "occupancy",
+			Source: "medaix",
+			Object: cfac.Object{
+				Name: s.Name,
 			},
-
-			Occupancy: cfac.Percent(s.Workload.Percentage),
+			Time: uint64(time.Now().UnixMilli()),
 		},
+
+		Occupancy: float64(s.Value),
+		Capacity:  float64(s.Max),
 	}
 }
 
 func NewMeasurable() cfac.Measurable {
-	return &Measurable{
-		StudioID: 38,
-	}
+	return &Measurable{}
 }
 
 func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
-	FetchOccupancy(m.StudioID, c, func(cnt VisitorCounter) {
-		cb(cnt.Measure())
-	}, ecb)
+	measurements := []cfac.Measurement{}
+
+	stop := false
+
+	for studio := 1; !stop; studio++ {
+
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+
+		FetchOccupancy(studio, c.Clone(), func(cnt VisitorCounter) {
+			measurements = append(measurements, cnt.Measure())
+			wg.Done()
+		}, func(e error) {
+			stop = true
+			wg.Done()
+		})
+
+		wg.Wait()
+	}
+
+	cb(measurements)
 }
 
 func init() {

@@ -23,7 +23,7 @@ var (
 	}
 	RWTHGym = cfac.Object{
 		Name: "RWTHgym",
-		Location: cfac.Coordinate{
+		Location: &Scfac.Coordinate{
 			Latitude:  50.779244,
 			Longitude: 6.068629,
 		},

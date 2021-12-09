@@ -10,8 +10,7 @@ func (o Occupancy) Measure() []cfac.Measurement {
 		return cfac.BaseMeasurement{
 			Name: "carolus",
 			Object: cfac.Object{
-				Name:     "Carolus Therme " + name,
-				Location: cfac.Coordinate{},
+				Name: "Carolus Therme " + name,
 			},
 		}
 	}
