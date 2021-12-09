@@ -1,0 +1,5 @@
+package helper
+
+func SetupLogging() {
+
+}

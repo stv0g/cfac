@@ -28,89 +28,18 @@ type Location struct {
 	ProviderGroup ProviderGroup `json:"providerGroup"`
 }
 
-type Attributes struct {
-	Seats struct {
-		Value       int    `json:"value"`
-		Description string `json:"description"`
-	} `json:"seats"`
-	Colour struct {
-		Value       interface{} `json:"value"`
-		Description string      `json:"description"`
-	} `json:"colour"`
-	Fuel struct {
-		Value       string `json:"value"`
-		Description string `json:"description"`
-	} `json:"fuel"`
-	Licenseplate struct {
-		Value       string      `json:"value"`
-		Description interface{} `json:"description"`
-	} `json:"licenseplate"`
-	Charging         interface{} `json:"charging"`
-	TransmissionType struct {
-		Value       string `json:"value"`
-		Description string `json:"description"`
-	} `json:"transmissionType"`
-	Model     interface{} `json:"model"`
-	FillLevel struct {
-		Value       int    `json:"value"`
-		Description string `json:"description"`
-	} `json:"fillLevel"`
-	Doors struct {
-		Value       int    `json:"value"`
-		Description string `json:"description"`
-	} `json:"doors"`
+type Attribute struct {
+	Value       interface{} `json:"value"`
+	Description string      `json:"description"`
 }
 
-type Equipment struct {
-	ParkDistanceControl struct {
-		Description string `json:"description"`
-	} `json:"parkDistanceControl"`
-	TrailerCoupling           interface{} `json:"trailerCoupling"`
-	BluetoothHandsFreeCalling struct {
-		Description string `json:"description"`
-	} `json:"bluetoothHandsFreeCalling"`
-	SunRoof                interface{} `json:"sunRoof"`
-	CdPlayer               interface{} `json:"cdPlayer"`
-	ChargingCableForSchuko interface{} `json:"chargingCableForSchuko"`
-	AirConditioning        struct {
-		Description string `json:"description"`
-	} `json:"airConditioning"`
-	HighRoof          interface{} `json:"highRoof"`
-	ParticulateFilter interface{} `json:"particulateFilter"`
-	Vignettes         interface{} `json:"vignettes"`
-	AudioInline       struct {
-		Description string `json:"description"`
-	} `json:"audioInline"`
-	ElectricalHardtop interface{} `json:"electricalHardtop"`
-	ChildSeats        interface{} `json:"childSeats"`
-	RoofRailing       interface{} `json:"roofRailing"`
-	NavigationSystem  struct {
-		Description string `json:"description"`
-	} `json:"navigationSystem"`
-	TyreType struct {
-		Description string `json:"description"`
-	} `json:"tyreType"`
-	IsofixSeatFittings struct {
-		Description string `json:"description"`
-	} `json:"isofixSeatFittings"`
-	LoadingBayCover   interface{} `json:"loadingBayCover"`
-	FullBranding      interface{} `json:"fullBranding"`
-	SnowChains        interface{} `json:"snowChains"`
-	EmissionsStickers struct {
-		Description string `json:"description"`
-	} `json:"emissionsStickers"`
-	CruiseControl struct {
-		Description string `json:"description"`
-	} `json:"cruiseControl"`
-	ParkHeating            interface{} `json:"parkHeating"`
-	ChargingCableForType2  interface{} `json:"chargingCableForType2"`
-	DividedRearBenchSeat   interface{} `json:"dividedRearBenchSeat"`
-	HeatedSeats            interface{} `json:"heatedSeats"`
-	FoldingRoof            interface{} `json:"foldingRoof"`
-	PassengerAirbagTurnOff struct {
-		Description string `json:"description"`
-	} `json:"passengerAirbagTurnOff"`
+type Attributes map[string]Attribute
+
+type Piece struct {
+	Description string `json:"description"`
 }
+
+type Equipment map[string]Piece
 
 type Category struct {
 	UID         string      `json:"uid"`
@@ -143,13 +72,35 @@ type RentalObject struct {
 	PriceValue             int        `json:"price_value"`
 }
 
-type Result struct {
+type Station struct {
 	Area          Area           `json:"area"`
 	Location      Location       `json:"location"`
 	RentalObjects []RentalObject `json:"rentalObjects"`
 }
 
 type Response struct {
-	Error  interface{} `json:"error"`
-	Result []Result    `json:"result"`
+	Error   interface{} `json:"error"`
+	Results []Station   `json:"result"`
+}
+
+type Request struct {
+	Method string             `json:"method"`
+	Params []RequestParameter `json:"params"`
+	ID     int64              `json:"id"`
+}
+
+type RequestParameter struct {
+	Position       Position      `json:"geoPos"`
+	MaxItems       string        `json:"maxItems"`
+	DateTimeStart  string        `json:"dateTimeStart"`
+	DateTimeEnd    string        `json:"dateTimeEnd"`
+	Address        string        `json:"address"`
+	VehicleTypeIds []interface{} `json:"vehicleTypeIds"`
+	Equipment      []interface{} `json:"equipment"`
+}
+
+type Position struct {
+	Radius    string  `json:"radius"`
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
 }
