@@ -1,0 +1,56 @@
+---
+version: "3.2"
+
+volumes:
+  influx-data:
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    ports:
+    - 5672:5672
+    - 15672:15672
+    environment:
+      RABBITMQ_ERLANG_COOKIE: eecaeneevi9ayaew3Ohghu6beemasiev
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+
+  influxdb:
+    image: influxdb:2.1
+    volumes:
+    - influx-data:/var/lib/influxdb2:rw
+    ports:
+    - 8086:8086
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: admin1234
+      DOCKER_INFLUXDB_INIT_ORG: primary
+      DOCKER_INFLUXDB_INIT_BUCKET: cfac
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: admin1234
+
+  telegraf:
+    image: telegraf:1.20
+    volumes:
+    - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+    - influxdb
+    - rabbitmq
+    links:
+    - influxdb
+    - rabbitmq
+    restart: always
+
+  scraper:
+    build: ./..
+    depends_on:
+    - rabbitmq
+    links:
+    - rabbitmq
+    environment:
+      CFAC_AMQP_URL: amqp://admin:admin@rabbitmq:5672//
+      CFAC_INTERVAL: 10s
+      CFAC_SCRAPER_IGNORE_ROBOTS_TXT: "true"
+      CFAC_SCRAPER_ASYNC: "true"
+      CFAC_MEASURABLE: apag
