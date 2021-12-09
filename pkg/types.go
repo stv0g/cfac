@@ -7,18 +7,18 @@ type NewMeasurable func() Measurable
 type Percent int
 
 type Coordinate struct {
-	Latitude  float64
-	Longitude float64
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lon"`
 }
 
 type BoundingBox struct {
-	NorthWest Coordinate
-	SouthEast Coordinate
+	NorthWest Coordinate `json:"nw"`
+	SouthEast Coordinate `json:"se"`
 }
 
 type Object struct {
-	Name     string     `json:"name"`
-	Location Coordinate `json:"location"`
+	Name     string      `json:"name"`
+	Location *Coordinate `json:"location,omitempty"`
 }
 
 type BaseMeasurement struct {
@@ -32,8 +32,8 @@ type BaseMeasurement struct {
 type OccupancyMeasurement struct {
 	BaseMeasurement
 
-	Occupancy float64 `json:"occupancy"`
-	Capacity  float64 `json:"capacity"`
+	Occupancy float64 `json:"occupancy,omitempty"`
+	Capacity  float64 `json:"capacity,omitempty"`
 }
 
 type OccupancyPercentMeasurement struct {
