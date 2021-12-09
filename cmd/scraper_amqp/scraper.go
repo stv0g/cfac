@@ -2,45 +2,27 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/gocolly/colly/v2"
+	log "github.com/sirupsen/logrus"
 	cfac "github.com/stv0g/cfac/pkg"
 
-	"github.com/olebedev/config"
-
 	_ "github.com/stv0g/cfac/pkg/mobility/apag"
+
+	"github.com/stv0g/cfac/internal/helper"
 )
 
-func setupLogging() {
-
-}
-
-func setupConfig() *config.Config {
-	var configFile string
-
-	flag.StringVar(&configFile, "config", "config.yaml", "Configuration file")
-	flag.Parse()
-
-	cfg, err := config.ParseYamlFile(configFile)
-	if err != nil {
-		panic(err)
-	}
-
-	cfg.Flag()
-	cfg.EnvPrefix("CFAC")
-
-	return cfg
-}
-
 func main() {
-	setupLogging()
-	cfg := setupConfig()
+	helper.SetupLogging()
+
+	cfg, err := helper.SetupConfig()
+	if err != nil {
+		log.WithError(err).Fatal("Failed to parse config")
+	}
 
 	// Signals
 	sigs := make(chan os.Signal, 1)
@@ -57,13 +39,16 @@ func main() {
 
 	// AMQP session
 	session := NewSession("cfac", cfg.UString("amqp.url"))
+	defer session.Close()
 
-	component := cfg.UString("component", "apag")
+	meas_name := cfg.UString("measurable", "apag")
 
-	f, err := cfac.GetMeasurable(component)
+	new_meas, err := cfac.GetMeasurable(meas_name)
 	if err != nil {
 		panic(err)
 	}
+
+	meas := new_meas()
 
 	c := colly.NewCollector()
 	defer c.Wait()
@@ -76,14 +61,14 @@ loop:
 	for {
 		select {
 		case <-ticker.C:
-			log.Println("Tick")
+			log.Info("Tick")
 
-			f(c, func(measurements []cfac.Measurement) {
+			meas.Fetch(c.Clone(), func(measurements []cfac.Measurement) {
 				if payload, err := json.Marshal(measurements); err == nil {
 					session.Push(payload)
 				}
 			}, func(err error) {
-				log.Printf("%s", err)
+				log.WithError(err).Error("Failed to fetch measurement")
 			})
 
 		case sig := <-sigs:
@@ -93,8 +78,6 @@ loop:
 			}
 		}
 	}
-
-	session.Close()
 
 	log.Printf("Bye")
 }

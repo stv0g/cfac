@@ -2,10 +2,9 @@ package main
 
 import (
 	"errors"
-	"log"
-	"os"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
 
@@ -28,7 +27,7 @@ var (
 
 type Session struct {
 	name            string
-	logger          *log.Logger
+	logger          *log.Entry
 	connection      *amqp.Connection
 	channel         *amqp.Channel
 	done            chan bool
@@ -42,7 +41,7 @@ type Session struct {
 // attempts to connect to the server.
 func NewSession(name string, addr string) *Session {
 	session := Session{
-		logger: log.New(os.Stdout, "", log.LstdFlags),
+		logger: log.WithField("name", name),
 		name:   name,
 		done:   make(chan bool),
 	}
@@ -55,7 +54,7 @@ func NewSession(name string, addr string) *Session {
 func (session *Session) handleReconnect(addr string) {
 	for {
 		session.isReady = false
-		log.Printf("Attempting to connect to %s", addr)
+		log.WithField("addr", addr).Infof("Connecting to broker")
 
 		conn, err := session.connect(addr)
 
@@ -85,7 +84,7 @@ func (session *Session) connect(addr string) (*amqp.Connection, error) {
 	}
 
 	session.changeConnection(conn)
-	log.Println("Connected!")
+	log.Println("Connected to broker")
 	return conn, nil
 }
 
@@ -148,7 +147,7 @@ func (session *Session) init(conn *amqp.Connection) error {
 
 	session.changeChannel(ch)
 	session.isReady = true
-	log.Println("Setup!")
+	log.Info("Setup completed")
 
 	return nil
 }
@@ -191,10 +190,11 @@ func (session *Session) Push(data []byte) error {
 			}
 			continue
 		}
+
 		select {
 		case confirm := <-session.notifyConfirm:
 			if confirm.Ack {
-				session.logger.Println("Push confirmed!")
+				session.logger.Info("Pushed measurement")
 				return nil
 			}
 		case <-time.After(resendDelay):
