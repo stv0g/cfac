@@ -1,5 +1,7 @@
 package nominatim
 
+import cfac "github.com/stv0g/cfac/pkg"
+
 type ReponseSearch []Place
 
 type Place struct {
@@ -16,6 +18,13 @@ type Place struct {
 	Importance  float64  `json:"importance"`
 	Icon        string   `json:"icon"`
 	Address     Address  `json:"address"`
+}
+
+func (p *Place) Coordinate() cfac.Coordinate {
+	return cfac.Coordinate{
+		Latitude:  p.Latitude,
+		Longitude: p.Longitude,
+	}
 }
 
 type Address struct {
