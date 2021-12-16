@@ -36,6 +36,13 @@ type OccupancyMeasurement struct {
 	Capacity  float64 `json:"capacity,omitempty"`
 }
 
+type WaitingTimeMeasurement struct {
+	BaseMeasurement
+
+	WaitingTime  int `json:"waiting_time"`
+	VisitorCount int `json:"visitor_count"`
+}
+
 type OccupancyPercentMeasurement struct {
 	BaseMeasurement
 
