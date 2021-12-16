@@ -1,7 +1,7 @@
 package cfac
 
 type ErrorCallback func(error)
-type MeasurementsCallback func(m []Measurement)
+type MeasurementCallback func(m Measurement)
 type NewMeasurable func() Measurable
 
 type Percent int
@@ -32,7 +32,7 @@ type BaseMeasurement struct {
 type OccupancyMeasurement struct {
 	BaseMeasurement
 
-	Occupancy float64 `json:"occupancy,omitempty"`
+	Occupancy float64 `json:"occupancy"`
 	Capacity  float64 `json:"capacity,omitempty"`
 }
 

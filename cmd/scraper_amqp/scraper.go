@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	cfac "github.com/stv0g/cfac/pkg"
 
-	_ "github.com/stv0g/cfac/pkg/mobility/apag"
+	_ "github.com/stv0g/cfac/pkg/all"
 
 	"github.com/stv0g/cfac/internal/helper"
 )
@@ -63,8 +63,8 @@ loop:
 		case <-ticker.C:
 			log.Info("Tick")
 
-			meas.Fetch(c.Clone(), func(measurements []cfac.Measurement) {
-				if payload, err := json.Marshal(measurements); err == nil {
+			meas.Fetch(c.Clone(), func(measurement cfac.Measurement) {
+				if payload, err := json.Marshal(measurement); err == nil {
 					session.Push(payload)
 				}
 			}, func(err error) {

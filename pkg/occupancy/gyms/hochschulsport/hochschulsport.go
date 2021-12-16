@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -23,7 +24,7 @@ var (
 	}
 	RWTHGym = cfac.Object{
 		Name: "RWTHgym",
-		Location: &Scfac.Coordinate{
+		Location: &cfac.Coordinate{
 			Latitude:  50.779244,
 			Longitude: 6.068629,
 		},
@@ -32,10 +33,14 @@ var (
 
 type Callback func(u Occupancy)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
 		client := gosseract.NewClient()
 		defer client.Close()
+		defer wg.Done()
 
 		if err := client.SetWhitelist("0123456789"); err != nil {
 			ecb(err)
@@ -77,7 +82,7 @@ func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	url, err := url.Parse(Url)
 	if err != nil {
 		ecb(err)
-		return
+		return wg
 	}
 
 	c.OnRequest(func(r *colly.Request) {
@@ -89,4 +94,6 @@ func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	})
 
 	c.Visit(Url)
+
+	return wg
 }

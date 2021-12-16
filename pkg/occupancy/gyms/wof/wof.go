@@ -3,6 +3,7 @@ package wof
 import (
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -14,7 +15,13 @@ const (
 
 type Callback func(studios Studio)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	c.OnScraped(func(r *colly.Response) {
+		wg.Done()
+	})
 
 	c.OnHTML("table[id=meineTabelle] tbody", func(e *colly.HTMLElement) {
 		lastUpdated, err := cfac.LastUpdated(e.Response)
@@ -47,4 +54,6 @@ func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	})
 
 	c.Visit(Url)
+
+	return wg
 }

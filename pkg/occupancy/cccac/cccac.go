@@ -10,6 +10,7 @@ package cccac
 
 import (
 	"encoding/json"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -20,8 +21,13 @@ const (
 	UrlApiCurrentStatus = UrlApi + "/status/current?public"
 )
 
-func FetchStatus(c *colly.Collector, cb func(sts Status), ecb cfac.ErrorCallback) {
+func FetchStatus(c *colly.Collector, cb func(sts Status), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var resp ResponseCurrentStatus
 		if err := json.Unmarshal(r.Body, &resp); err != nil {
 			ecb(err)
@@ -32,4 +38,6 @@ func FetchStatus(c *colly.Collector, cb func(sts Status), ecb cfac.ErrorCallback
 	})
 
 	c.Visit(UrlApiCurrentStatus)
+
+	return wg
 }

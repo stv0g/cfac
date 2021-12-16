@@ -1,6 +1,8 @@
 package carolus
 
 import (
+	"sync"
+
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
 )
@@ -8,10 +10,13 @@ import (
 func (o Occupancy) Measure() []cfac.Measurement {
 	base := func(name string) cfac.BaseMeasurement {
 		return cfac.BaseMeasurement{
-			Name: "carolus",
+			Name:   "occupancy",
+			Source: "carolus",
 			Object: cfac.Object{
-				Name: "Carolus Therme " + name,
+				Name:     "Carolus Therme " + name,
+				Location: &Coordinate,
 			},
+			Time: uint64(o.LastUpdated.UnixMilli()),
 		}
 	}
 
@@ -40,9 +45,11 @@ func NewMeasurable() cfac.Measurable {
 	return &Measurable{}
 }
 
-func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
-	FetchOccupancy(c, func(o Occupancy) {
-		cb(o.Measure())
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchOccupancy(c, func(o Occupancy) {
+		for _, m := range o.Measure() {
+			cb(m)
+		}
 	}, ecb)
 }
 

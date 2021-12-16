@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/url"
 	"regexp"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -16,8 +17,13 @@ const (
 	UrlChartXS = UrlApi + "?q={ident}&d=chartxs&max={max}"
 )
 
-func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) {
+func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var re = regexp.MustCompile(`(?m)var houses = (.*);$`)
 
 		m := re.FindSubmatch(r.Body)
@@ -48,14 +54,21 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback
 	})
 
 	c.Visit(Url)
+
+	return wg
 }
 
-func FetchAllHouseStats(c *colly.Collector, cb func([]Stats), ecb cfac.ErrorCallback) {
-	FetchHouseStats(c, "", cb, ecb)
+func FetchAllHouseStats(c *colly.Collector, cb func([]Stats), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchHouseStats(c, "", cb, ecb)
 }
 
-func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfac.ErrorCallback) {
+func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var stats []Stats
 		if err := json.Unmarshal(r.Body, &stats); err != nil {
 			ecb(err)
@@ -75,10 +88,12 @@ func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfa
 	q.Add("f", "json")
 
 	c.Visit(UrlApi + "?" + q.Encode())
+
+	return wg
 }
 
-func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) {
-	FetchAllHouses(c, func(houses []House) {
+func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchAllHouses(c, func(houses []House) {
 		FetchAllHouseStats(c.Clone(), func(houseStats []Stats) {
 			for j, hs := range houseStats {
 				for i, h := range houses {

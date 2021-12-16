@@ -3,6 +3,7 @@ package blutspende
 import (
 	"encoding/json"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -16,8 +17,13 @@ const (
 	UrlSpendePegelStat  = UrlApi + "/spendepegel-stat"
 )
 
-func FetchPegel(c *colly.Collector, cb func(p SpendePegelStats), ecb cfac.ErrorCallback) {
+func FetchPegel(c *colly.Collector, cb func(p SpendePegelStats), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var resp ResponseSpendePegelStats
 
 		if err := json.Unmarshal(r.Body, &resp); err != nil {
@@ -39,4 +45,6 @@ func FetchPegel(c *colly.Collector, cb func(p SpendePegelStats), ecb cfac.ErrorC
 	})
 
 	c.Visit(UrlSpendePegelStat)
+
+	return wg
 }

@@ -5,7 +5,6 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/gocolly/colly/v2"
 	log "github.com/sirupsen/logrus"
@@ -14,6 +13,17 @@ import (
 
 	_ "github.com/stv0g/cfac/pkg/all"
 )
+
+func DumpMeasurement(measurement cfac.Measurement) {
+	if payload, err := json.MarshalIndent(measurement, "", "  "); err == nil {
+		os.Stdout.Write(payload)
+		os.Stdout.WriteString("\n")
+	}
+}
+
+func DumpError(err error) {
+	log.WithError(err).Error("Failed to fetch measurement")
+}
 
 func main() {
 	helper.SetupLogging()
@@ -44,17 +54,5 @@ func main() {
 	c.Async = cfg.UBool("scraper.async", true)
 	c.IgnoreRobotsTxt = cfg.UBool("scraper.ignore_robots_txt", true)
 
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-
-	meas.Fetch(c.Clone(), func(measurements []cfac.Measurement) {
-		if payload, err := json.MarshalIndent(measurements, "", "  "); err == nil {
-			os.Stdout.Write(payload)
-			wg.Done()
-		}
-	}, func(err error) {
-		log.WithError(err).Error("Failed to fetch measurement")
-	})
-
-	wg.Wait()
+	meas.Fetch(c, DumpMeasurement, DumpError).Wait()
 }

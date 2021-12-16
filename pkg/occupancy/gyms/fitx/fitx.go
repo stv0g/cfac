@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -58,8 +59,13 @@ func FetchStudios(c *colly.Collector, coords cfac.Coordinate, cb func(s []Studio
 	})
 }
 
-func FetchStudioWorkload(c *colly.Collector, studioID int, cb func(s Studio), ecb cfac.ErrorCallback) {
+func FetchStudioWorkload(c *colly.Collector, studioID int, cb func(s Studio), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var strings []string
 		var studio Studio
 
@@ -84,4 +90,6 @@ func FetchStudioWorkload(c *colly.Collector, studioID int, cb func(s Studio), ec
 	c.Visit(cfac.PrepareUrl(UrlWorkload, cfac.UrlArgs{
 		"studio_id": strconv.Itoa(studioID),
 	}))
+
+	return wg
 }

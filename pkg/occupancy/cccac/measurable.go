@@ -1,7 +1,6 @@
-package wof
+package cccac
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/gocolly/colly/v2"
@@ -11,23 +10,27 @@ import (
 
 type Measurable struct{}
 
-func (s *Studio) Measure() cfac.Measurement {
-	query := fmt.Sprintf("%s %s, Aachen, Deutschland", s.Name, s.Location)
-	coord, _ := nominatim.SearchAndCache(query)
+func (sts *Status) Measure() cfac.Measurement {
+	name := "Chaos Computer Club Aachen"
+	coord, _ := nominatim.SearchAndCache(name)
 
-	return &cfac.OccupancyPercentMeasurement{
+	occ := 0
+	if sts.Status == "open" {
+		occ = 1
+	}
+
+	return &cfac.OccupancyMeasurement{
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "occupancy",
-			Source: "wof",
-			Time:   uint64(s.LastUpdated.UnixMilli()),
-
+			Source: "cccac",
 			Object: cfac.Object{
-				Name:     s.Name,
+				Name:     name,
 				Location: &coord,
 			},
+			Time: uint64(sts.Time * 1000),
 		},
 
-		Occupancy: s.Occupancy,
+		Occupancy: float64(occ),
 	}
 }
 
@@ -36,11 +39,11 @@ func NewMeasurable() cfac.Measurable {
 }
 
 func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
-	return FetchOccupancy(c, func(s Studio) {
-		cb(s.Measure())
+	return FetchStatus(c, func(sts Status) {
+		cb(sts.Measure())
 	}, ecb)
 }
 
 func init() {
-	cfac.RegisterMeasurable("wof", NewMeasurable)
+	cfac.RegisterMeasurable("cccac", NewMeasurable)
 }

@@ -2,6 +2,7 @@ package spielbank
 
 import (
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -20,7 +21,14 @@ var (
 
 type Callback func(u Occupancy)
 
-func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	c.OnScraped(func(r *colly.Response) {
+		wg.Done()
+	})
+
 	c.OnHTML("div.metric", func(h *colly.HTMLElement) {
 		ratio, err := strconv.ParseFloat(h.Attr("data-ratio"), 32)
 		if err != nil {
@@ -48,4 +56,6 @@ func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 	})
 
 	c.Visit(Url)
+
+	return wg
 }

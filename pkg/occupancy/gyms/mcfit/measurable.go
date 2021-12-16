@@ -1,45 +1,56 @@
 package mcfit
 
 import (
+	"sync"
+	"time"
+
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
 	"github.com/stv0g/cfac/pkg/city"
 )
 
-func (s *Studio) Measure() []cfac.Measurement {
-	return []cfac.Measurement{
-		&cfac.OccupancyPercentMeasurement{
-			BaseMeasurement: cfac.BaseMeasurement{
-				Name:   "occupancy",
-				Source: "mcfit",
-				Object: cfac.Object{
-					Name: s.StudioName,
-					Location: &cfac.Coordinate{
-						Latitude:  s.Address.Latitude,
-						Longitude: s.Address.Longitude,
-					},
-				},
-			},
+type Measurable struct {
+	Location cfac.Coordinate
+	Radius   float32
+}
 
-			Occupancy: s.
-		},
+func NewMeasurable() cfac.Measurable {
+	return &Measurable{
+		Location: city.Aachen.Coordinate,
+		Radius:   10,
 	}
 }
 
-type Measurable struct{}
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
 
-func NewMeasurable() cfac.Measurable {
-	return &Measurable{}
-}
+	FetchStudiosByCoordinates(c, city.Aachen.Coordinate, 30e3, func(t []Studio) {
+		for _, s := range t {
+			FetchCurrentOccupancy(c.Clone(), s.ID, func(o Occupancy) {
+				cb(&cfac.OccupancyPercentMeasurement{
+					BaseMeasurement: cfac.BaseMeasurement{
+						Name:   "occupancy",
+						Source: "mcfit",
+						Time:   uint64(time.Now().UnixMilli()),
+						Object: cfac.Object{
+							Name: s.StudioName,
+							Location: &cfac.Coordinate{
+								Latitude:  s.Address.Latitude,
+								Longitude: s.Address.Longitude,
+							},
+						},
+					},
 
-func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
-	FetchCurrentOccupancy(c, city.Aachen.Coordinate, 10e3, func(s []Studio) {
-		m := []cfac.Measurement{}
-		for _, t := range s {
-			m = append(m, t.Measure()...)
+					Occupancy: cfac.Percent(o.Percentage),
+				})
+				wg.Done()
+			}, ecb)
 		}
-		cb(m)
+
+		wg.Add(len(t))
 	}, ecb)
+
+	return wg
 }
 
 func init() {

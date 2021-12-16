@@ -1,21 +1,21 @@
 package spielbank
 
 import (
+	"sync"
+
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
 )
 
-func (u Occupancy) Measure() []cfac.Measurement {
-	return []cfac.Measurement{
-		&cfac.OccupancyPercentMeasurement{
-			BaseMeasurement: cfac.BaseMeasurement{
-				Name:   "spielbank",
-				Time:   uint64(u.LastUpdated.UnixMilli()),
-				Object: SpielbankAachen,
-			},
-
-			Occupancy: cfac.Percent(u.Utilization),
+func (u Occupancy) Measure() cfac.Measurement {
+	return &cfac.OccupancyPercentMeasurement{
+		BaseMeasurement: cfac.BaseMeasurement{
+			Name:   "spielbank",
+			Time:   uint64(u.LastUpdated.UnixMilli()),
+			Object: SpielbankAachen,
 		},
+
+		Occupancy: cfac.Percent(u.Utilization),
 	}
 }
 
@@ -25,8 +25,8 @@ func NewMeasurable() cfac.Measurable {
 	return &Measurable{}
 }
 
-func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementsCallback, ecb cfac.ErrorCallback) {
-	FetchOccupancy(c, func(u Occupancy) {
+func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchOccupancy(c, func(u Occupancy) {
 		cb(u.Measure())
 	}, ecb)
 }
