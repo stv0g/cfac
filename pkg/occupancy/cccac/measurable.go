@@ -23,7 +23,7 @@ func (sts *Status) Measure() cfac.Measurement {
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "occupancy",
 			Source: "cccac",
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name:     name,
 				Location: &coord,
 			},

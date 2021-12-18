@@ -13,7 +13,7 @@ func (s *Studio) Measure() cfac.Measurement {
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "occupancy",
 			Source: "fitx",
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name: "FITX " + s.Name,
 				Location: &cfac.Coordinate{
 					Latitude:  s.Location.Lat,

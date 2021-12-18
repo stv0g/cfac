@@ -13,7 +13,7 @@ func (wc *WaitCircle) Measure() cfac.Measurement {
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "waiting_time",
 			Source: "terminmanagement",
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name: wc.Name,
 			},
 			Time: uint64(time.Now().UnixMilli()),

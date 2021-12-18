@@ -19,7 +19,7 @@ func (p *SpendePegelStats) Measure() cfac.Measurement {
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "pegel",
 			Source: "blutspende",
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name:     name,
 				Location: &coord,
 			},

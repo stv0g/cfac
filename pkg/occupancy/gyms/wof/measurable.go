@@ -21,7 +21,7 @@ func (s *Studio) Measure() cfac.Measurement {
 			Source: "wof",
 			Time:   uint64(s.LastUpdated.UnixMilli()),
 
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name:     s.Name,
 				Location: &coord,
 			},

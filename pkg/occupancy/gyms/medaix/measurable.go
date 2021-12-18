@@ -17,7 +17,7 @@ func (s *VisitorCounter) Measure() cfac.Measurement {
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "occupancy",
 			Source: "medaix",
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name: s.Name,
 				// Location: &coord,
 			},

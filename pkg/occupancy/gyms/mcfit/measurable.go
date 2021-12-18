@@ -32,7 +32,7 @@ func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb 
 						Name:   "occupancy",
 						Source: "mcfit",
 						Time:   uint64(time.Now().UnixMilli()),
-						Object: cfac.Object{
+						Object: &cfac.Object{
 							Name: s.StudioName,
 							Location: &cfac.Coordinate{
 								Latitude:  s.Address.Latitude,

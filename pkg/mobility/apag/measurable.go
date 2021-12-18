@@ -12,7 +12,7 @@ func (h *House) Measure() cfac.Measurement {
 		BaseMeasurement: cfac.BaseMeasurement{
 			Name:   "occupancy",
 			Source: "apag",
-			Object: cfac.Object{
+			Object: &cfac.Object{
 				Name: h.Title,
 				Location: &cfac.Coordinate{
 					Latitude:  float64(h.Latitude),
