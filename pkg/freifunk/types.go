@@ -1,21 +1,24 @@
 package freifunk
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type ResponseNodes struct {
-	Version   int    `json:"version"`
-	Timestamp string `json:"timestamp"`
-	Nodes     []Node `json:"nodes"`
+	Version   int       `json:"version"`
+	Timestamp time.Time `json:"timestamp"`
+	Nodes     []Node    `json:"nodes"`
 }
 
 type ResponseNodeList struct {
 	Version   string         `json:"version"`
-	UpdatedAt string         `json:"updated_at"`
+	UpdatedAt CustomTime     `json:"updated_at"`
 	Nodes     []NodeNodelist `json:"nodes"`
 }
 
 type ResponseMeshviewer struct {
-	Timestamp string           `json:"timestamp"`
+	Timestamp time.Time        `json:"timestamp"`
 	Nodes     []NodeMeshviewer `json:"nodes"`
 	Links     []Link           `json:"links"`
 }
@@ -57,9 +60,9 @@ type NodeNodelist struct {
 	ID     string `json:"id"`
 	Name   string `json:"name"`
 	Status struct {
-		Online      bool   `json:"online"`
-		Lastcontact string `json:"lastcontact"`
-		Clients     int    `json:"clients"`
+		Online      bool       `json:"online"`
+		LastContact CustomTime `json:"lastcontact"`
+		Clients     int        `json:"clients"`
 	} `json:"status"`
 	Position struct {
 		Lat  float64 `json:"lat"`
@@ -236,4 +239,15 @@ type Firmware struct {
 type AutoUpdater struct {
 	Enabled bool   `json:"enabled"`
 	Branch  string `json:"branch"`
+}
+
+type CustomTime struct {
+	time.Time
+}
+
+func (c *CustomTime) UnmarshalJSON(b []byte) error {
+	var err error
+	s := strings.Trim(string(b), "\"")
+	c.Time, err = time.Parse("2006-01-02T15:04:05-0700", s)
+	return err
 }
