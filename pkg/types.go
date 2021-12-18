@@ -22,11 +22,14 @@ type Object struct {
 }
 
 type BaseMeasurement struct {
-	Name string `json:"name"`
-	Time uint64 `json:"time"`
+	Name   string `json:"name,omitempty"`
+	Time   uint64 `json:"time"`
+	Metric string `json:"metric,omitempty"`
+	Source string `json:"source,omitempty"`
 
-	Object Object `json:"object"`
-	Source string `json:"source"`
+	Object *Object `json:"object,omitempty"`
+
+	Tags map[string]string `json:"tag,omitempty"`
 }
 
 type OccupancyMeasurement struct {
