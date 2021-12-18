@@ -5,17 +5,16 @@ import (
 	"time"
 )
 
+type Call string
+
 type Response struct {
 	WaitCircles  map[string]string         `json:"waitcircles"`
 	WaitingTime  map[string]CustomDuration `json:"waitingtime"`
 	VisitorCount map[string]string         `json:"visitorcount"`
 	LastCalls    map[string]string         `json:"last_calls"`
 	LastRefresh  CustomTime                `json:"last_refresh"`
-	NextCalls    struct {
-		Haendlerwartekreis        []string `json:"Haendlerwartekreis"`
-		TerminFuehrerscheinstelle []string `json:"Termin-Fuehrerscheinstelle"`
-		TerminZulassungsstelle    []string `json:"Termin-Zulassungsstelle"`
-	} `json:"next_calls"`
+	NextCalls    interface{}               `json:"next_calls"`
+	// NextCalls    map[string][]Call         `json:"next_calls"`
 }
 
 type WaitCircle struct {
