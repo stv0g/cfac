@@ -34,10 +34,8 @@ func NewMeasurable() cfac.Measurable {
 }
 
 func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
-	return FetchAllHousesWithStats(c, func(houses []House) {
-		for _, h := range houses {
-			cb(h.Measure())
-		}
+	return FetchHousesWithStats(c, func(h House) {
+		cb(h.Measure())
 	}, ecb)
 }
 

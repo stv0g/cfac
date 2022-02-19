@@ -59,10 +59,6 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback
 }
 
 func FetchAllHouseStats(c *colly.Collector, cb func([]Stats), ecb cfac.ErrorCallback) *sync.WaitGroup {
-	return FetchHouseStats(c, "", cb, ecb)
-}
-
-func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfac.ErrorCallback) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
@@ -78,9 +74,31 @@ func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfa
 		cb(stats)
 	})
 
-	if ident == "" {
-		ident = "all"
-	}
+	q := url.Values{}
+	q.Add("q", "all")
+	q.Add("d", "fulldata")
+	q.Add("f", "json")
+
+	c.Visit(UrlApi + "?" + q.Encode())
+
+	return wg
+}
+
+func FetchHouseStats(c *colly.Collector, ident string, cb func(Stats), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
+		var stats Stats
+		if err := json.Unmarshal(r.Body, &stats); err != nil {
+			ecb(err)
+			return
+		}
+
+		cb(stats)
+	})
 
 	q := url.Values{}
 	q.Add("q", ident)
@@ -92,22 +110,21 @@ func FetchHouseStats(c *colly.Collector, ident string, cb func([]Stats), ecb cfa
 	return wg
 }
 
-func FetchAllHousesWithStats(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback) *sync.WaitGroup {
-	return FetchAllHouses(c, func(houses []House) {
-		FetchAllHouseStats(c.Clone(), func(houseStats []Stats) {
-			for j, hs := range houseStats {
-				for i, h := range houses {
-					if h.Ident == hs.Ident {
-						houses[i].Stats = &houseStats[j]
+func FetchHousesWithStats(c *colly.Collector, cb func(House), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchAllHouseStats(c.Clone(), func(stats []Stats) {
+		FetchAllHouses(c, func(houses []House) {
+			for _, s := range stats {
+				for _, h := range houses {
+					if s.Ident == h.Ident {
+						h.Stats = &s
+						cb(h)
 					}
 				}
 			}
-
-			cb(houses)
 		}, ecb)
 	}, ecb)
 }
 
-func (h *House) FetchStats(c *colly.Collector, cb func([]Stats), ecb cfac.ErrorCallback) {
-	FetchHouseStats(c, h.Ident, cb, ecb)
+func (h *House) FetchStats(c *colly.Collector, cb func(Stats), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchHouseStats(c, h.Ident, cb, ecb)
 }
