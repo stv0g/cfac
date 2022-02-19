@@ -16,8 +16,8 @@ type Measurable struct {
 
 func NewMeasurable() cfac.Measurable {
 	return &Measurable{
-		Location: city.Aachen.Coordinate,
-		Radius:   10,
+		Location: city.Aachen.Center,
+		Radius:   30e3,
 	}
 }
 

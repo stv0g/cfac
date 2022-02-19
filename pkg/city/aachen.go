@@ -1,12 +1,14 @@
 package city
 
-import cfac "github.com/stv0g/cfac/pkg"
+import (
+	cfac "github.com/stv0g/cfac/pkg"
+)
 
 // TODO: Provide facts about Aachen from Wikidata
 // TODO: use ontologies
 
 var Aachen = City{
-	Coordinate: cfac.Coordinate{
+	Center: cfac.Coordinate{
 		Latitude:  50.776351,
 		Longitude: 6.083862,
 	},
