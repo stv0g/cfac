@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"sort"
 	"strconv"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -66,8 +67,13 @@ func FetchStudiosByCoordinates(c *colly.Collector, co cfac.Coordinate, dist floa
 	}, ecb)
 }
 
-func FetchOccupancy(c *colly.Collector, studioID int, cb func(o ResponseOccupancy), ecb cfac.ErrorCallback) {
+func FetchOccupancy(c *colly.Collector, studioID int, cb func(o ResponseOccupancy), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var o ResponseOccupancy
 		if err := json.Unmarshal(r.Body, &o); err != nil {
 			ecb(err)
@@ -78,14 +84,15 @@ func FetchOccupancy(c *colly.Collector, studioID int, cb func(o ResponseOccupanc
 	})
 
 	q := url.Values{}
-
 	q.Add("tx_brastudioprofilesmcfitcom_brastudioprofiles[studioId]", strconv.Itoa(studioID))
 
 	c.Visit(UrlOccupancy + "?" + q.Encode())
+
+	return wg
 }
 
-func FetchCurrentOccupancy(c *colly.Collector, studioID int, cb func(o Occupancy), ecb cfac.ErrorCallback) {
-	FetchOccupancy(c, studioID, func(ol ResponseOccupancy) {
+func FetchCurrentOccupancy(c *colly.Collector, studioID int, cb func(o Occupancy), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchOccupancy(c, studioID, func(ol ResponseOccupancy) {
 		for _, o := range ol.Items {
 			if o.IsCurrent {
 				cb(o)

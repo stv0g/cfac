@@ -23,10 +23,13 @@ func NewMeasurable() cfac.Measurable {
 
 func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
-	FetchStudiosByCoordinates(c, city.Aachen.Coordinate, 30e3, func(t []Studio) {
+	FetchStudiosByCoordinates(c, m.Location, float64(m.Radius), func(t []Studio) {
+		defer wg.Done()
+
 		for _, s := range t {
-			FetchCurrentOccupancy(c.Clone(), s.ID, func(o Occupancy) {
+			wg := FetchCurrentOccupancy(c.Clone(), s.ID, func(o Occupancy) {
 				cb(&cfac.OccupancyPercentMeasurement{
 					BaseMeasurement: cfac.BaseMeasurement{
 						Name:   "occupancy",
@@ -43,11 +46,9 @@ func (m *Measurable) Fetch(c *colly.Collector, cb cfac.MeasurementCallback, ecb 
 
 					Occupancy: cfac.Percent(o.Percentage),
 				})
-				wg.Done()
 			}, ecb)
+			wg.Wait()
 		}
-
-		wg.Add(len(t))
 	}, ecb)
 
 	return wg
