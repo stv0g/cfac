@@ -12,8 +12,8 @@ func TestFetchData(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	sensor_community.FetchDataRadius(city.Aachen.Coordinate, 10e3, c.Collector, func(sensor sensor_community.Sensor) {
-		t.Logf("Sensor = %+v", sensor)
+	sensor_community.FetchDataRadius(city.Aachen.Center, 10e3, c.Collector, func(sensor sensor_community.Sensor) {
+		t.Logf("Sensor = %+#v", sensor)
 		c.MarkHandled()
 	}, c.ErrorCallback())
 }

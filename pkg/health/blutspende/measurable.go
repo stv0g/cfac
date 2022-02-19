@@ -24,6 +24,9 @@ func (p *SpendePegelStats) Measure() cfac.Measurement {
 				Location: &coord,
 			},
 			Time: uint64(time.Now().UnixMilli()),
+			Tags: map[string]string{
+				"unit": "doses",
+			},
 		},
 
 		Count: uint64(p.Donations),

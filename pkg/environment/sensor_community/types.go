@@ -5,7 +5,7 @@ type ResponseLabs []Lab
 type SensorDataValues struct {
 	Value     string `json:"value"`
 	ValueType string `json:"value_type"`
-	ID        int64  `json:"id"`
+	ID        int    `json:"id"`
 }
 
 type SensorType struct {
@@ -26,14 +26,14 @@ type SensorLocation struct {
 
 type SensorInfo struct {
 	Pin        string     `json:"pin"`
-	ID         string     `json:"id"`
+	ID         int        `json:"id"`
 	SensorType SensorType `json:"sensor_type"`
 }
 
 type Sensor struct {
 	Sensor       SensorInfo         `json:"sensor"`
 	Location     SensorLocation     `json:"location"`
-	ID           int64              `json:"id"`
+	ID           int                `json:"id"`
 	DataValues   []SensorDataValues `json:"sensordatavalues"`
 	Timestamp    string             `json:"timestamp"`
 	SamplingRate interface{}        `json:"sampling_rate"`
