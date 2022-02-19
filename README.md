@@ -41,7 +41,6 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 ### Besucherzahlen & aktuelle Auslastung (`occupancy`)
 
 - ✅ [Carolus Therme](https://www.carolus-thermen.de/en/thermalbath/#occupation)
-- ~~✅ [Spielbank Aachen](https://www.spielbank-aachen.de)~~
 - ✅ [Chaos Computer Club Aachen](https://wiki.aachen.ccc.de/doku.php?id=projekte:clubstatus)
 
 #### Fitnessstudios (`gyms`)
@@ -71,23 +70,21 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 #### Strahlung (`radiation`)
 
 - [ODLinfo](https://odlinfo.bfs.de/DE/aktuelles/messstelle/053130003.html): aktuelle Radioaktivitäts / ODL Messungen
-- [Gammasense](https://gammasense.org/map/)
+- ✅ [Gammasense](https://gammasense.org/map/)
 - [Geige Counter World Map (gmcmap.com)](https://www.gmcmap.com/)
-- [radmon.org](https://radmon.org/index.php)
-- [Tihange-Doel Radiation Monitoring (TDRM)](https://tdrm.fiff.de/)
+- ✅ [radmon.org](https://radmon.org/index.php)
+- ✅ [Tihange-Doel Radiation Monitoring (TDRM)](https://tdrm.fiff.de/)
 
 ### Webcams (`webcams`)
 
 ### Gesundheit (`health`)
 
-- ✅ [Blutspendepegel](https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/2021-08)
 - [Covid 19](https://offenedaten.aachen.de/dataset/aktuelle-lage-zum-corona-virus): aktuelle Fallzahlen in der Städteregion
 
 ### Sonstiges
 
 - [Abfallapp/navi](https://abfallnavi.de/aachen/)
 - [Freifunk Aachen](https://map.aachen.freifunk.net/): Standorte Accesspoints, aktuelle Auslastung, [Open-data](https://data.aachen.freifunk.net)
-
 - [Amateuerfunk-Gruppe der RWTH Aachen](https://www.afu.rwth-aachen.de/)
   - APRS Receiver
 
@@ -103,6 +100,8 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 - [Wetterstation Geo RWTH](https://www.klimageo.rwth-aachen.de/cms/Klimageo/Das-Lehr-und-Forschungsgebiet/Ausstattung/~pcdx/Wetterstationen/)
 - [RWTH Aachen Lernraumampel](https://blog.rwth-aachen.de/lehre/2017/07/28/die-lernraumampel-ist-da/)
 - [Bürgerservice Wartezeiten](https://serviceportal.aachen.de/wartezeiten)
+- ✅ [Spielbank Aachen](https://www.spielbank-aachen.de)
+- ✅ [Blutspendepegel](https://www.ukaachen.de/kliniken-institute/transfusionsmedizin-blutspendedienst/blutspendedienst/blutspendepegel/spendepegel/2021-08)
 
 ## Roadmap: future ideas
 

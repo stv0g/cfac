@@ -14,5 +14,6 @@ func TestFetch(t *testing.T) {
 
 	tdrm.Fetch(c.Collector, func(s tdrm.Station) {
 		fmt.Printf("%#+v\n", s)
+		c.MarkHandled()
 	}, c.ErrorCallback())
 }

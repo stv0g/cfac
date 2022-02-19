@@ -2,6 +2,7 @@ package gammasense
 
 import (
 	"encoding/json"
+	"sync"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -15,14 +16,18 @@ const (
 	UrlApiRecent   = UrlApi + "/recent"
 )
 
+type StationCallback func(Station)
 type StationListCallback func([]Station)
+type MeasurementListCallback func([]Measurement)
 
-type MeasurementCallback func(Measurement)
+func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
-func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {
-		stations := []Station{}
+		defer wg.Done()
 
+		stations := []Station{}
 		if err := json.Unmarshal(r.Body, &stations); err != nil {
 			ecb(err)
 			return
@@ -32,16 +37,25 @@ func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCal
 	})
 
 	c.Visit(UrlApiStations)
+
+	return wg
 }
 
-func FetchRecent(c *colly.Collector, cb MeasurementCallback, ecb cfac.ErrorCallback) {
-	c.OnResponse(onMeasurementListResponse(cb, ecb))
+func FetchRecent(c *colly.Collector, cb MeasurementListCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
+	c.OnResponse(onMeasurementListResponse(cb, ecb, wg))
 	c.Visit(UrlApiRecent)
+
+	return wg
 }
 
-func FetchHourly(sid string, start, end time.Time, c *colly.Collector, cb MeasurementCallback, ecb cfac.ErrorCallback) {
-	c.OnResponse(onMeasurementListResponse(cb, ecb))
+func FetchHourly(sid string, start, end time.Time, c *colly.Collector, cb MeasurementListCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	c.OnResponse(onMeasurementListResponse(cb, ecb, wg))
 
 	url := cfac.PrepareUrl(UrlApiHourly, cfac.UrlArgs{
 		"sensor_id": sid,
@@ -50,19 +64,39 @@ func FetchHourly(sid string, start, end time.Time, c *colly.Collector, cb Measur
 	})
 
 	c.Visit(url)
+
+	return wg
 }
 
-func onMeasurementListResponse(cb MeasurementCallback, ecb cfac.ErrorCallback) colly.ResponseCallback {
+func onMeasurementListResponse(cb MeasurementListCallback, ecb cfac.ErrorCallback, wg *sync.WaitGroup) colly.ResponseCallback {
 	return func(r *colly.Response) {
-		var resp []Measurement
+		defer wg.Done()
 
+		var resp []Measurement
 		if err := json.Unmarshal(r.Body, &resp); err != nil {
 			ecb(err)
 			return
 		}
 
-		for _, m := range resp {
-			cb(m)
+		for i := range resp {
+			resp[i].Time = resp[i].Time.UTC()
 		}
+
+		cb(resp)
 	}
+}
+
+func FetchStationMeasurements(c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	return FetchRecent(c, func(meas []Measurement) {
+		FetchStations(c.Clone(), func(sts []Station) {
+			for _, m := range meas {
+				for _, s := range sts {
+					if m.ID == s.ID {
+						s.Measurement = &m
+						cb(s)
+					}
+				}
+			}
+		}, ecb).Wait()
+	}, ecb)
 }

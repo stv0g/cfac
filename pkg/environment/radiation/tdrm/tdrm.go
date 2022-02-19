@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -14,13 +15,18 @@ const (
 	Url = "https://tdrm2.fiff.de/index.php"
 )
 
-func Fetch(c *colly.Collector, cb func(Station), ecb cfac.ErrorCallback) {
+func Fetch(c *colly.Collector, cb func(Station), ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	d := c.Clone()
 	d.WithTransport(&http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	})
 
 	d.OnHTML("table[id=TDRM_TAB]", func(h *colly.HTMLElement) {
+		defer wg.Done()
+
 		region := ""
 
 		h.ForEach("tr[class^=TDRM_TAB_Stripe]", func(i int, h *colly.HTMLElement) {
@@ -63,4 +69,6 @@ func Fetch(c *colly.Collector, cb func(Station), ecb cfac.ErrorCallback) {
 	})
 
 	d.Visit(Url)
+
+	return wg
 }

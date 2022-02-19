@@ -24,8 +24,8 @@ func TestGammasenseRecent(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	gammasense.FetchRecent(c.Collector, func(m gammasense.Measurement) {
-		t.Logf("Station: %+v", m)
+	gammasense.FetchRecent(c.Collector, func(m []gammasense.Measurement) {
+		t.Logf("Measurements: %+v", m)
 		c.MarkHandled()
 	}, c.ErrorCallback())
 }
@@ -38,8 +38,18 @@ func TestGammasenseHourly(t *testing.T) {
 	end := time.Now()
 	start := end.AddDate(0, 0, -1)
 
-	gammasense.FetchHourly(sid, start, end, c.Collector, func(m gammasense.Measurement) {
-		t.Logf("Station: %+v", m)
+	gammasense.FetchHourly(sid, start, end, c.Collector, func(m []gammasense.Measurement) {
+		t.Logf("Stations: %+v", m)
+		c.MarkHandled()
+	}, c.ErrorCallback())
+}
+
+func TestFetchStationMeasurements(t *testing.T) {
+	c := th.NewCollector(t)
+	defer c.Close()
+
+	gammasense.FetchStationMeasurements(c.Collector, func(s gammasense.Station) {
+		t.Logf("Station: %+#v", s)
 		c.MarkHandled()
 	}, c.ErrorCallback())
 }
