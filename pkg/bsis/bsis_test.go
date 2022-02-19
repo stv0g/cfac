@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	th "github.com/stv0g/cfac/internal/testing"
-	"github.com/stv0g/cfac/pkg/city/aachen/bsis"
+	"github.com/stv0g/cfac/pkg/bsis"
 )
 
 func TestFetchConstructionSites(t *testing.T) {
