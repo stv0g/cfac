@@ -11,9 +11,7 @@ _cfac_ is a Go package for accessing various real-time data sources and APIs in 
 
 ## Disclaimer
 
-_cfac_ is currently under active development and considered in an alpha stage.
-
-_cfac_ accesses data from various sources by the means of web-scraping and undocumented APIs.
+_cfac_ accesses data from various sources by the means of web-scraping and undocumented APIs. Please be aware of the implications.
 
 ## Package contents
 
@@ -43,7 +41,7 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 ### Besucherzahlen & aktuelle Auslastung (`occupancy`)
 
 - ✅ [Carolus Therme](https://www.carolus-thermen.de/en/thermalbath/#occupation)
-- ✅ [Spielbank Aachen](https://www.spielbank-aachen.de)
+- ~~✅ [Spielbank Aachen](https://www.spielbank-aachen.de)~~
 - ✅ [Chaos Computer Club Aachen](https://wiki.aachen.ccc.de/doku.php?id=projekte:clubstatus)
 
 #### Fitnessstudios (`gyms`)
