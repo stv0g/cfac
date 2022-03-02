@@ -19,18 +19,26 @@ const (
 type StationListCallback func([]StationInfo)
 type StationCallback func(Station)
 
-func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCallback) {
+func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		stations := []StationInfo{}
 
 		if err := json.Unmarshal(r.Body, &stations); err != nil {
 			ecb(err)
+			return
 		}
 
 		cb(stations)
 	})
 
 	c.Visit(UrlApiStationList)
+
+	return wg
 }
 
 func FetchStation(sid string, c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
@@ -44,6 +52,7 @@ func FetchStation(sid string, c *colly.Collector, cb StationCallback, ecb cfac.E
 
 		if err := json.Unmarshal(r.Body, &station); err != nil {
 			ecb(err)
+			return
 		}
 
 		cb(station)
@@ -59,27 +68,14 @@ func FetchStation(sid string, c *colly.Collector, cb StationCallback, ecb cfac.E
 }
 
 func FetchAllStations(c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
-	FetchStations(c, func(stations []StationInfo) {
-		defer wg.Done()
-
-		wg2 := &sync.WaitGroup{}
-		wg2.Add(len(stations))
-
+	return FetchStations(c, func(stations []StationInfo) {
 		for _, si := range stations {
 			FetchStation(si.ID, c.Clone(), func(s Station) {
-				defer wg2.Done()
-
-				s.StationInfo = si
+				info := &si
+				s.StationInfo = info
 
 				cb(s)
-			}, ecb)
+			}, ecb).Wait()
 		}
-
-		wg2.Wait()
 	}, ecb)
-
-	return wg
 }

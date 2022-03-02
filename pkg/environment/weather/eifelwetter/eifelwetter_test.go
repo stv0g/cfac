@@ -7,7 +7,7 @@ import (
 	"github.com/stv0g/cfac/pkg/environment/weather/eifelwetter"
 )
 
-func TestEifelwetter(t *testing.T) {
+func TestFetchAllStations(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 

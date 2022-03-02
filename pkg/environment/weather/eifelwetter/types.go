@@ -19,7 +19,7 @@ type StationInfo struct {
 }
 
 type Station struct {
-	StationInfo
+	*StationInfo
 
 	ID            int       `json:"id"`
 	StationID     string    `json:"station_id"`
