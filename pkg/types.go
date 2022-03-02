@@ -58,6 +58,36 @@ type TemperatureMeasurment struct {
 	Temperature float64 `json:"temperature"`
 }
 
+type RadiationMeasurement struct {
+	BaseMeasurement
+
+	Radiation float64 `json:"radiation"`
+}
+
+type OzonMeasurement struct {
+	BaseMeasurement
+
+	Ozon float64 `json:"ozon"`
+}
+
+type SO2Measurement struct {
+	BaseMeasurement
+
+	SO2 float64 `json:"so2"`
+}
+
+type NO2Measurement struct {
+	BaseMeasurement
+
+	NO2 float64 `json:"no2"`
+}
+
+type PM10Measurement struct {
+	BaseMeasurement
+
+	PM10 float64 `json:"pm10"`
+}
+
 type CounterMeasurement struct {
 	BaseMeasurement
 
