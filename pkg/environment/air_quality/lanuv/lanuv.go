@@ -3,13 +3,17 @@ package lanuv
 import (
 	"bytes"
 	"encoding/csv"
-	"errors"
+	"fmt"
 	"io"
 	"math"
 	"strconv"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
+	"golang.org/x/text/encoding/charmap"
 )
 
 // https://luadb.lds.nrw.de/LUA/hygon/pegel.php?rohdaten=ja
@@ -27,13 +31,27 @@ const (
 
 type Callback func(AirQuality)
 
-func Fetch(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
+func Fetch(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
-		reader := bytes.NewReader(r.Body)
+		defer wg.Done()
+
+		isoDecoder := charmap.ISO8859_1.NewDecoder()
+		utf8Body, _ := isoDecoder.Bytes(r.Body)
+
+		reader := bytes.NewReader(utf8Body)
 		csv_reader := csv.NewReader(reader)
 		csv_reader.Comma = ';'
+		csv_reader.FieldsPerRecord = 2
 
+		var ts time.Time
+
+		row := 0
 		for {
+			row++
+
 			// Read each record from csv
 			record, err := csv_reader.Read()
 			if err == io.EOF {
@@ -42,24 +60,41 @@ func Fetch(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) {
 				ecb(err)
 			}
 
-			aq, err := ParseCols(record)
-			if err != nil {
-				ecb(err)
-			}
+			switch {
+			case row == 1: // Timestamp: Date;Time
+				t := fmt.Sprintf("%s-%s", record[0], record[1])
+				ts, err = time.Parse("02.01.2006-15:04", t)
+				if err != nil {
+					ecb(fmt.Errorf("failed to parse time '%s': %w", t, err))
+					return
+				}
+			case row == 2: // Header
+				// ignore
+				csv_reader.FieldsPerRecord = 7
+			case row > 2:
+				aq, err := parseCols(record)
+				if err != nil {
+					ecb(err)
+				}
 
-			cb(aq)
+				aq.Timestamp = ts
+
+				cb(aq)
+			}
 		}
 
 	})
 
 	c.Visit(UrlCsv)
+
+	return wg
 }
 
-func ParseCols(row []string) (AirQuality, error) {
+func parseCols(row []string) (AirQuality, error) {
 	var err error
 
 	if len(row) < 6 {
-		return AirQuality{}, errors.New("invalid number of columns")
+		return AirQuality{}, fmt.Errorf("invalid number of columns: %s", strings.Join(row, ";"))
 	}
 
 	aq := AirQuality{
@@ -67,27 +102,27 @@ func ParseCols(row []string) (AirQuality, error) {
 		ID:      row[1],
 	}
 
-	if aq.Ozon, err = ParseValue(row[2]); err != nil {
+	if aq.Ozon, err = parseValue(row[2]); err != nil {
 		return aq, err
 	}
 
-	if aq.SO2, err = ParseValue(row[3]); err != nil {
+	if aq.SO2, err = parseValue(row[3]); err != nil {
 		return aq, err
 	}
 
-	if aq.NO2, err = ParseValue(row[4]); err != nil {
+	if aq.NO2, err = parseValue(row[4]); err != nil {
 		return aq, err
 	}
 
-	if aq.PM10, err = ParseValue(row[5]); err != nil {
+	if aq.PM10, err = parseValue(row[5]); err != nil {
 		return aq, err
 	}
 
 	return aq, nil
 }
 
-func ParseValue(s string) (float64, error) {
-	if s == "*" {
+func parseValue(s string) (float64, error) {
+	if s == "*" || s == "-" {
 		return math.NaN(), nil
 	}
 

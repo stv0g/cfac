@@ -2,6 +2,7 @@ package all
 
 import (
 	_ "github.com/stv0g/cfac/pkg/bsis"
+	_ "github.com/stv0g/cfac/pkg/environment/air_quality/lanuv"
 	_ "github.com/stv0g/cfac/pkg/environment/radiation/gammasense"
 	_ "github.com/stv0g/cfac/pkg/environment/radiation/radmon"
 	_ "github.com/stv0g/cfac/pkg/environment/radiation/tdrm"

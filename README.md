@@ -65,7 +65,7 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 #### Luftqualität (`air_quality`)
 
-- [LANUV](https://www.lanuv.nrw.de/umwelt/luft/immissionen/aktuelle-luftqualitaet): aktuelle Luftqualität
+- ✅ [LANUV](https://www.lanuv.nrw.de/umwelt/luft/immissionen/aktuelle-luftqualitaet): aktuelle Luftqualität
 
 #### Strahlung (`radiation`)
 
