@@ -1,3 +1,6 @@
+//go:build gosseract
+// +build gosseract
+
 package hochschulsport
 
 import (

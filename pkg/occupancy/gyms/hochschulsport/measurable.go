@@ -1,3 +1,6 @@
+//go:build gosseract
+// +build gosseract
+
 package hochschulsport
 
 import (
@@ -25,7 +28,7 @@ func (o Occupancy) Measure() cfac.Measurement {
 			Name:   "occupancy",
 			Source: "hochschulsport",
 			Time:   uint64(o.LastUpdated.UnixMilli()),
-			Object: RWTHGym,
+			Object: &RWTHGym,
 		},
 
 		Occupancy: o.Occupancy,
