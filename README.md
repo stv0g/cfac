@@ -60,7 +60,7 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 - [AWEKAS](https://www.awekas.at/)
 - [meteo Aachen](https://meteoaachen.de/)
 - [Deutscher Wetterdienst](https://www.dwd.de/DE/wetter/wetterundklima_vorort/nordrhein-westfalen/aachen/_node.html)
-- [Eifelwetter](https://www.eifelwetter.de/): aktuelle Wetterdaten
+- ✅ [Eifelwetter](https://www.eifelwetter.de/): aktuelle Wetterdaten
 - [Buienalarm](https://buienalarm.nl)
 
 #### Luftqualität (`air_quality`)

@@ -19,13 +19,15 @@ type StationInfo struct {
 }
 
 type Station struct {
+	StationInfo
+
 	ID            int       `json:"id"`
 	StationID     string    `json:"station_id"`
 	Timestamp     time.Time `json:"timestamp"`
 	Temperature   float64   `json:"temperature"`
 	Humidity      float64   `json:"humidity"`
-	Dewpoint      float64   `json:"dewpoint"`
-	Windchill     float64   `json:"windchill"`
+	DewPoint      float64   `json:"dewpoint"`
+	WindChill     float64   `json:"windchill"`
 	AirPressure   float64   `json:"air_pressure"`
 	Rain1Hour     float64   `json:"rain_1_hour"`
 	Rain24Hour    float64   `json:"rain_24_hour"`
@@ -34,7 +36,7 @@ type Station struct {
 	WindGusts     float64   `json:"wind_gusts"`
 	WindDirection int       `json:"wind_direction"`
 	SunshineHours float64   `json:"sunshine_hours"`
-	UvIndex       float64   `json:"uv_index"`
+	UVIndex       float64   `json:"uv_index"`
 	Luminosity    float64   `json:"luminosity"`
 	SnowHeight    float64   `json:"snow_height"`
 	CloudBase     float64   `json:"cloud_base"`

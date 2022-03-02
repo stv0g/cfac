@@ -32,6 +32,28 @@ type BaseMeasurement struct {
 	Tags map[string]string `json:"tag,omitempty"`
 }
 
+func (b BaseMeasurement) WithTags(kv ...string) BaseMeasurement {
+	bc := b
+
+	bc.Tags = map[string]string{}
+	for k, v := range b.Tags {
+		bc.Tags[k] = v
+	}
+
+	for i := 0; i+1 < len(kv); i += 2 {
+		key := kv[i]
+		value := kv[i+1]
+
+		bc.Tags[key] = value
+	}
+
+	return bc
+}
+
+func (b BaseMeasurement) WithUnit(unit string) BaseMeasurement {
+	return b.WithTags("unit", unit)
+}
+
 type OccupancyMeasurement struct {
 	BaseMeasurement
 
@@ -56,6 +78,84 @@ type TemperatureMeasurment struct {
 	BaseMeasurement
 
 	Temperature float64 `json:"temperature"`
+}
+
+type HumidityMeasurement struct {
+	BaseMeasurement
+
+	Humidity float64 `json:"humidity"`
+}
+
+type AirPressureMeasurement struct {
+	BaseMeasurement
+
+	AirPressure float64 `json:"air_pressure"`
+}
+
+type DewPointMeasurement struct {
+	BaseMeasurement
+
+	DewPoint float64 `json:"dew_point"`
+}
+
+type SunshineHoursMeasurement struct {
+	BaseMeasurement
+
+	SunshineHours float64 `json:"sunshine_hours"`
+}
+
+type WindChillMeasurement struct {
+	BaseMeasurement
+
+	WindChill float64 `json:"wind_chill"`
+}
+
+type UVIndexMeasurement struct {
+	BaseMeasurement
+
+	UVIndex float64 `json:"uv_index"`
+}
+
+type LuminosityMeasurement struct {
+	BaseMeasurement
+
+	Luminosity float64 `json:"luminosity"`
+}
+
+type SnowHeightMeasurement struct {
+	BaseMeasurement
+
+	SnowHeight float64 `json:"snow_height"`
+}
+
+type CloudBaseMeasurement struct {
+	BaseMeasurement
+
+	CloudBase float64 `json:"cloud_base"`
+}
+
+type WindDirectionMeasurement struct {
+	BaseMeasurement
+
+	WindDirection float64 `json:"wind_direction"`
+}
+
+type WindGustsMeasurement struct {
+	BaseMeasurement
+
+	WindGusts float64 `json:"wind_gusts"`
+}
+
+type WindSpeedMeasurement struct {
+	BaseMeasurement
+
+	WindSpeed float64 `json:"wind_speed"`
+}
+
+type RainMeasurement struct {
+	BaseMeasurement
+
+	Rain float64 `json:"rain"`
 }
 
 type RadiationMeasurement struct {

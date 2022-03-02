@@ -6,6 +6,7 @@ import (
 	_ "github.com/stv0g/cfac/pkg/environment/radiation/gammasense"
 	_ "github.com/stv0g/cfac/pkg/environment/radiation/radmon"
 	_ "github.com/stv0g/cfac/pkg/environment/radiation/tdrm"
+	_ "github.com/stv0g/cfac/pkg/environment/weather/eifelwetter"
 	_ "github.com/stv0g/cfac/pkg/freifunk"
 	_ "github.com/stv0g/cfac/pkg/health/blutspende"
 	_ "github.com/stv0g/cfac/pkg/mobility/apag"

@@ -2,6 +2,7 @@ package eifelwetter
 
 import (
 	"encoding/json"
+	"sync"
 
 	"github.com/gocolly/colly/v2"
 	cfac "github.com/stv0g/cfac/pkg"
@@ -32,8 +33,13 @@ func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCal
 	c.Visit(UrlApiStationList)
 }
 
-func FetchStation(sid string, c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) {
+func FetchStation(sid string, c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	c.OnResponse(func(r *colly.Response) {
+		defer wg.Done()
+
 		var station Station
 
 		if err := json.Unmarshal(r.Body, &station); err != nil {
@@ -48,12 +54,32 @@ func FetchStation(sid string, c *colly.Collector, cb StationCallback, ecb cfac.E
 	})
 
 	c.Visit(url)
+
+	return wg
 }
 
-func FetchAllStations(c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) {
+func FetchAllStations(c *colly.Collector, cb StationCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
 	FetchStations(c, func(stations []StationInfo) {
-		for _, s := range stations {
-			FetchStation(s.ID, c.Clone(), cb, ecb)
+		defer wg.Done()
+
+		wg2 := &sync.WaitGroup{}
+		wg2.Add(len(stations))
+
+		for _, si := range stations {
+			FetchStation(si.ID, c.Clone(), func(s Station) {
+				defer wg2.Done()
+
+				s.StationInfo = si
+
+				cb(s)
+			}, ecb)
 		}
+
+		wg2.Wait()
 	}, ecb)
+
+	return wg
 }
