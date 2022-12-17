@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.17-alpine AS builder
+FROM golang:1.19-alpine AS builder
 
 WORKDIR /app
 
@@ -9,6 +9,7 @@ COPY go.sum ./
 
 RUN apk --no-cache add \
     tesseract-ocr-dev \
+    opencv \
     musl-dev \
     gcc g++
 
