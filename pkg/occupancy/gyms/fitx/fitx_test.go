@@ -12,7 +12,7 @@ func TestFetchStudios(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	fitx.FetchStudios(c.Collector, city.Aachen.Coordinate, func(s []fitx.Studio) {
+	fitx.FetchStudios(c.Collector, city.Aachen.Center, func(s []fitx.Studio) {
 		t.Logf("Found studios: %+v", s)
 
 		found := false

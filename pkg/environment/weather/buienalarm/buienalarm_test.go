@@ -12,7 +12,7 @@ func TestBuienalarm(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	buienalarm.Fetch(city.Aachen.Coordinate, c.Collector, func(fc buienalarm.Forecast) {
+	buienalarm.Fetch(city.Aachen.Center, c.Collector, func(fc buienalarm.Forecast) {
 		t.Logf("Forecast: %+v", fc)
 		c.MarkHandled()
 	}, c.ErrorCallback())

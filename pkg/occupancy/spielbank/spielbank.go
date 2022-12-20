@@ -13,11 +13,9 @@ const (
 	Url = "https://www.spielbank-aachen.de/"
 )
 
-var (
-	SpielbankAachen = cfac.Object{
-		Name: "Spielbank Aachen",
-	}
-)
+var SpielbankAachen = &cfac.Object{
+	Name: "Spielbank Aachen",
+}
 
 type Callback func(u Occupancy)
 
