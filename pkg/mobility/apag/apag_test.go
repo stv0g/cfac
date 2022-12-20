@@ -18,7 +18,6 @@ func TestFetchAllHouses(t *testing.T) {
 
 		c.MarkHandled()
 	}, c.ErrorCallback())
-
 }
 
 func TestFetchAllHouseStats(t *testing.T) {
@@ -38,10 +37,8 @@ func TestFetchAllHousesWithStats(t *testing.T) {
 	c := th.NewCollector(t)
 	defer c.Close()
 
-	apag.FetchAllHousesWithStats(c.Collector, func(h []apag.House) {
-		for _, i := range h {
-			t.Logf("%+v", i)
-		}
+	apag.FetchHousesWithStats(c.Collector, func(h apag.House) {
+		t.Logf("%+v", h)
 
 		c.MarkHandled()
 	}, c.ErrorCallback())
