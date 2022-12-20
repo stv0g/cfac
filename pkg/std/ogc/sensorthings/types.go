@@ -5,16 +5,20 @@ package sensorthings
 
 import (
 	"time"
+
+	"github.com/stv0g/cfac/pkg/std/ietf/geojson"
 )
 
-type Repsonse struct {
+type Response struct {
 	IotNextLink string  `json:"@iot.nextLink"`
 	Value       []Thing `json:"value"`
 }
 
-type Any interface{}
-type ValueCode string
-type IotNavigationLink string
+type (
+	Any               interface{}
+	ValueCode         string
+	IotNavigationLink string
+)
 
 // A JSON Object containing user-annotated properties as key-value pairs.
 type Properties map[string]Any
@@ -72,7 +76,7 @@ type Location struct {
 	EncodingType string `json:"encodingType"`
 
 	// The location type is defined by encodingType.
-	Location GeoJSONLocation `json:"location"`
+	Location geojson.Location `json:"location"`
 
 	// A JSON Object containing user-annotated properties as key-value pairs.
 	Properties Properties `json:"properties"`
@@ -118,7 +122,7 @@ type Datastream struct {
 	Properties Properties `json:"properties"`
 
 	// The spatial bounding box of the spatial extent of all FeaturesOfInterest that belong to the Observations associated with this Datastream.
-	ObservedArea GeoJSONPolygon `json:"observedArea"`
+	ObservedArea geojson.Polygon `json:"observedArea"`
 
 	// The temporal interval of the phenomenon times of all observations belonging to this Datastream.
 	PhenomenonTime time.Time `json:"phenomenonTime"`
@@ -161,7 +165,7 @@ type MultiDatastream struct {
 	Properties Properties `json:"properties"`
 
 	// The spatial bounding box of the spatial extent of all FeaturesOfInterest that belong to the Observations associated with this Datastream.
-	ObservedArea GeoJSONPolygon `json:"observedArea"`
+	ObservedArea geojson.Polygon `json:"observedArea"`
 
 	// The temporal interval of the phenomenon times of all observations belonging to this Datastream.
 	PhenomenonTime time.Time `json:"phenomenonTime"`
@@ -170,7 +174,6 @@ type MultiDatastream struct {
 	ResultTime time.Time `json:"resultTime"`
 }
 
-//
 type Unit struct {
 	// Full name of unit of measurement
 	Name string `json:"name"`
