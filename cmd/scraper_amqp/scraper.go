@@ -29,19 +29,14 @@ func main() {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	// Ticker and Backup
-	intervalStr := cfg.UString("interval", "10s")
-	interval, err := time.ParseDuration(intervalStr)
-	if err != nil {
-		panic(err)
-	}
-
+	interval := cfg.GetDuration("interval")
 	ticker := time.NewTicker(interval)
 
 	// AMQP session
-	session := NewSession("cfac", cfg.UString("amqp.url"))
+	session := NewSession("cfac", cfg.GetString("amqp.url"))
 	defer session.Close()
 
-	meas_name := cfg.UString("measurable", "apag")
+	meas_name := cfg.GetString("measurable")
 
 	new_meas, err := cfac.GetMeasurable(meas_name)
 	if err != nil {
@@ -54,8 +49,8 @@ func main() {
 	defer c.Wait()
 
 	c.AllowURLRevisit = true
-	c.Async = cfg.UBool("scraper.async", true)
-	c.IgnoreRobotsTxt = cfg.UBool("scraper.ignore_robots_txt", true)
+	c.Async = cfg.GetBool("scraper.async")
+	c.IgnoreRobotsTxt = cfg.GetBool("scraper.ignore_robots_txt")
 
 loop:
 	for {

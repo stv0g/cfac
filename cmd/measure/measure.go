@@ -51,8 +51,8 @@ func main() {
 	defer c.Wait()
 
 	c.AllowURLRevisit = true
-	c.Async = cfg.UBool("scraper.async", true)
-	c.IgnoreRobotsTxt = cfg.UBool("scraper.ignore_robots_txt", true)
+	c.Async = cfg.GetBool("scraper.async")
+	c.IgnoreRobotsTxt = cfg.GetBool("scraper.ignore_robots_txt")
 
 	meas.Fetch(c, DumpMeasurement, DumpError).Wait()
 }

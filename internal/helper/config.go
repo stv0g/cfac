@@ -2,43 +2,34 @@ package helper
 
 import (
 	"flag"
-	"os"
+	"time"
 
-	"github.com/olebedev/config"
+	"github.com/spf13/viper"
 )
 
-const defaultConfig = `
-amqp:
-  url: amqp://admin:admin@rabbitmq:5672//
+func SetupConfig() (*viper.Viper, error) {
+	cfg := viper.New()
 
-interval: 10s
+	cfg.SetDefault("amqp.url", "amqp://admin:admin@rabbitmq:5672//")
+	cfg.SetDefault("interval", 10*time.Second)
+	cfg.SetDefault("scraper.ignore_robots_txt", true)
+	cfg.SetDefault("scraper.async", true)
+	cfg.SetDefault("measurable", "apag")
 
-scraper:
-  ignore_robots_txt: true
-  async: true
+	cfg.SetEnvPrefix("CFAC")
 
-measurable: apag
-`
-
-func SetupConfig() (*config.Config, error) {
-	var cfgFile string = ""
-	var cfg *config.Config
-	var err error
-
-	flag.StringVar(&cfgFile, "config", "", "Configuration file")
+	cfgFile := flag.String("config", "", "Configuration file")
 	flag.Parse()
 
-	if cfgFile == "" {
-		cfg, err = config.ParseYaml(defaultConfig)
+	if cfgFile != nil {
+		cfg.SetConfigFile(*cfgFile)
 	} else {
-		cfg, err = config.ParseYamlFile(cfgFile)
-	}
-	if err != nil && err != os.ErrNotExist {
-		return nil, err
+		cfg.SetConfigName("config")
+		cfg.SetConfigType("yaml")
+		cfg.AddConfigPath("/etc/cfac/")
+		cfg.AddConfigPath("$HOME/.cfac")
+		cfg.AddConfigPath(".")
 	}
 
-	cfg.EnvPrefix("CFAC")
-	cfg.Flag()
-
-	return cfg, nil
+	return cfg, cfg.ReadInConfig()
 }
