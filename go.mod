@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/otiai10/gosseract/v2 v2.4.0
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/viper v1.14.0
 	github.com/streadway/amqp v1.0.0
 	gocv.io/x/gocv v0.31.0
