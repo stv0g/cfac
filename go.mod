@@ -8,7 +8,7 @@ require (
 	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/viper v1.16.0
 	github.com/streadway/amqp v1.0.0
-	gocv.io/x/gocv v0.31.0
+	gocv.io/x/gocv v0.32.1
 	golang.org/x/text v0.9.0
 )
 
