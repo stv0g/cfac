@@ -17,7 +17,7 @@ services:
       RABBITMQ_DEFAULT_PASS: admin
 
   influxdb:
-    image: influxdb:2.1
+    image: influxdb:2.7
     volumes:
     - influx-data:/var/lib/influxdb2:rw
     ports:
