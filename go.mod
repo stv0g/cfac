@@ -9,7 +9,7 @@ require (
 	github.com/spf13/viper v1.14.0
 	github.com/streadway/amqp v1.0.0
 	gocv.io/x/gocv v0.31.0
-	golang.org/x/text v0.5.0
+	golang.org/x/text v0.9.0
 )
 
 require (
@@ -36,7 +36,7 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	golang.org/x/net v0.4.0 // indirect
-	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
