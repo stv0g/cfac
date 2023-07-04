@@ -9,7 +9,7 @@ require (
 	github.com/spf13/viper v1.16.0
 	github.com/streadway/amqp v1.0.0
 	gocv.io/x/gocv v0.33.0
-	golang.org/x/text v0.10.0
+	golang.org/x/text v0.11.0
 )
 
 require (
