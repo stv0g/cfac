@@ -7,7 +7,7 @@ require (
 	github.com/otiai10/gosseract/v2 v2.4.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.16.0
-	github.com/streadway/amqp v1.0.0
+	github.com/streadway/amqp v1.1.0
 	gocv.io/x/gocv v0.33.0
 	golang.org/x/text v0.11.0
 )
