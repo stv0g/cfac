@@ -6,7 +6,7 @@ require (
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/otiai10/gosseract/v2 v2.4.1
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/streadway/amqp v1.1.0
 	gocv.io/x/gocv v0.35.0
 	golang.org/x/text v0.14.0
