@@ -1,6 +1,8 @@
 module github.com/stv0g/cfac
 
-go 1.19
+go 1.21
+
+toolchain go1.22.2
 
 require (
 	github.com/gocolly/colly/v2 v2.1.0
@@ -8,7 +10,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.18.2
 	github.com/streadway/amqp v1.1.0
-	gocv.io/x/gocv v0.35.0
+	gocv.io/x/gocv v0.36.1
 	golang.org/x/text v0.14.0
 )
 
