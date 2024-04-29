@@ -26,7 +26,7 @@ appVersion: "1.16.0"
 
 dependencies:
 - name: telegraf
-  version: "1.8.44"
+  version: "1.8.45"
   repository: "https://helm.influxdata.com/"
   condition: telegraf.enabled
   alias: telegraf
