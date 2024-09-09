@@ -2,7 +2,7 @@ module github.com/stv0g/cfac
 
 go 1.21
 
-toolchain go1.23.0
+toolchain go1.23.1
 
 require (
 	github.com/gocolly/colly/v2 v2.1.0
