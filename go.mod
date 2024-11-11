@@ -11,7 +11,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/streadway/amqp v1.1.0
 	gocv.io/x/gocv v0.39.0
-	golang.org/x/text v0.19.0
+	golang.org/x/text v0.20.0
 )
 
 require (
