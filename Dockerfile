@@ -22,7 +22,7 @@ ENV TAGS=gosseract
 RUN go build -tags ${TAGS} -o /scraper ./cmd/scraper_amqp/
 RUN go build -tags ${TAGS} -o /measure ./cmd/measure/
 
-FROM alpine:3.21.0
+FROM alpine:3.21.2
 
 RUN apk --no-cache add \
     ca-certificates \
