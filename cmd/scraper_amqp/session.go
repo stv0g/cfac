@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -57,7 +60,6 @@ func (session *Session) handleReconnect(addr string) {
 		log.WithField("addr", addr).Infof("Connecting to broker")
 
 		conn, err := session.connect(addr)
-
 		if err != nil {
 			log.Println("Failed to connect. Retrying...")
 
@@ -78,7 +80,6 @@ func (session *Session) handleReconnect(addr string) {
 // connect will create a new AMQP connection
 func (session *Session) connect(addr string) (*amqp.Connection, error) {
 	conn, err := amqp.Dial(addr)
-
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +96,6 @@ func (session *Session) handleReInit(conn *amqp.Connection) bool {
 		session.isReady = false
 
 		err := session.init(conn)
-
 		if err != nil {
 			log.Println("Failed to initialize channel. Retrying...")
 
@@ -122,13 +122,11 @@ func (session *Session) handleReInit(conn *amqp.Connection) bool {
 // init will initialize channel & declare queue
 func (session *Session) init(conn *amqp.Connection) error {
 	ch, err := conn.Channel()
-
 	if err != nil {
 		return err
 	}
 
 	err = ch.Confirm(false)
-
 	if err != nil {
 		return err
 	}
@@ -140,7 +138,6 @@ func (session *Session) init(conn *amqp.Connection) error {
 		false, // No-wait
 		nil,   // Arguments
 	)
-
 	if err != nil {
 		return err
 	}

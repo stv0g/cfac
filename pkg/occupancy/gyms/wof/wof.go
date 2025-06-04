@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package wof
 
 import (
@@ -50,7 +53,6 @@ func FetchOccupancy(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) *sy
 				LastUpdated: lastUpdated,
 			})
 		})
-
 	})
 
 	c.Visit(Url)

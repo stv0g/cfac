@@ -122,3 +122,8 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
   - [Open Data](https://offenedaten.aachen.de)
   - [GeoPortal](https://geoportal.aachen.de)
   - [Ratsinfo](http://ratsinfo.aachen.de/bi/allris.net.asp)
+
+## Lizenz
+
+- SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+- SPDX-License-Identifier: Apache-2.0

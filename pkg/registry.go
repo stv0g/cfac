@@ -1,12 +1,13 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package cfac
 
 import (
 	"fmt"
 )
 
-var (
-	measurables = map[string]NewMeasurable{}
-)
+var measurables = map[string]NewMeasurable{}
 
 func RegisterMeasurable(name string, ctor NewMeasurable) {
 	measurables[name] = ctor

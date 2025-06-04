@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+# SPDX-License-Identifier: Apache-2.0
+
 BBOX="50.88844,5.850671,50.666303,6.349731"
 TYPES="BUS_STOP,CAR_SHARING_STATION,BIKE_SHARING_STATION,RAIL_STATION,POI"
 

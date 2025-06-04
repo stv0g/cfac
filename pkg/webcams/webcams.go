@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package webcams
 
 import (
@@ -12,9 +15,7 @@ import (
 // https://www.strassen.nrw.de/de/projekte/a4/autobahnkreuz-aachen-a4-a44-a544/webcams.html
 // https://portal1469.webcam-profi.de/
 
-var (
-	Webcams []Webcam
-)
+var Webcams []Webcam
 
 func parseURL(u string) *url.URL {
 	i, _ := url.Parse(u)

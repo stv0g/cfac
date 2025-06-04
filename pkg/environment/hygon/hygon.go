@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package hygon
 
 // https://luadb.lds.nrw.de/LUA/hygon/hygon-datenmodell.pdf

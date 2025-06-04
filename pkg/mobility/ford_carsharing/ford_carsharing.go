@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package ford_carsharing
 
 import (
@@ -16,7 +19,6 @@ const (
 )
 
 func Fetch(coord cfac.Coordinate, radius int, c *colly.Collector, cb func(Station), ecb cfac.ErrorCallback) {
-
 	c.OnResponse(func(r *colly.Response) {
 		var resp Response
 

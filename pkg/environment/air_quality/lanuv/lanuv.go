@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package lanuv
 
 import (
@@ -82,7 +85,6 @@ func Fetch(c *colly.Collector, cb Callback, ecb cfac.ErrorCallback) *sync.WaitGr
 				cb(aq)
 			}
 		}
-
 	})
 
 	c.Visit(UrlCsv)

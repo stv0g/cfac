@@ -1,10 +1,15 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package gammasense
 
 import "time"
 
-type ResponseRecent []Measurement
-type ResponseStations []Station
-type ResponseHourly []Measurement
+type (
+	ResponseRecent   []Measurement
+	ResponseStations []Station
+	ResponseHourly   []Measurement
+)
 
 type Station struct {
 	SensorType  string    `json:"sensor_type"`

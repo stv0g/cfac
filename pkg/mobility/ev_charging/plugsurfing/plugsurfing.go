@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package plugsurfing
 
 // curl 'https://api.plugsurfing.com/persik/map-charging-stations?&min-lat=52.47831137787191&max-lat=52.56166508540464&min-lon=13.07536415625&max-lon=13.73454384375' \

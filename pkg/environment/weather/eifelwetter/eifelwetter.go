@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package eifelwetter
 
 import (
@@ -16,8 +19,10 @@ const (
 	UrlApiStationData    = UrlApiPublic + "/station/{station_id}/data/latest"
 )
 
-type StationListCallback func([]StationInfo)
-type StationCallback func(Station)
+type (
+	StationListCallback func([]StationInfo)
+	StationCallback     func(Station)
+)
 
 func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}

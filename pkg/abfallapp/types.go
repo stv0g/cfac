@@ -1,13 +1,18 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package abfallapp
 
-type ResponseFraktionen []Fraktion
-type ResponseStandortArten []StandortArt
-type ResponseOrte []Ort
-type ResponseOrtsteile []Ortsteil
-type ResponseStrassen []Strasse
-type ResponseTermine []Termin
-type ResponseStandorte []Standort
-type ResponseStoffe []Stoff
+type (
+	ResponseFraktionen    []Fraktion
+	ResponseStandortArten []StandortArt
+	ResponseOrte          []Ort
+	ResponseOrtsteile     []Ortsteil
+	ResponseStrassen      []Strasse
+	ResponseTermine       []Termin
+	ResponseStandorte     []Standort
+	ResponseStoffe        []Stoff
+)
 
 type Stoff struct {
 	ID        int       `json:"id"`

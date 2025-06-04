@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package cfac
 
-type ErrorCallback func(error)
-type MeasurementCallback func(m Measurement)
-type NewMeasurable func() Measurable
+type (
+	ErrorCallback       func(error)
+	MeasurementCallback func(m Measurement)
+	NewMeasurable       func() Measurable
+)
 
 type Percent int
 

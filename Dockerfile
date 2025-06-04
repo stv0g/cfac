@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
 
+# SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+# SPDX-License-Identifier: Apache-2.0
+
 FROM golang:1.24-alpine AS builder
 
 WORKDIR /app

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package gammasense
 
 import (
@@ -16,9 +19,11 @@ const (
 	UrlApiRecent   = UrlApi + "/recent"
 )
 
-type StationCallback func(Station)
-type StationListCallback func([]Station)
-type MeasurementListCallback func([]Measurement)
+type (
+	StationCallback         func(Station)
+	StationListCallback     func([]Station)
+	MeasurementListCallback func([]Measurement)
+)
 
 func FetchStations(c *colly.Collector, cb StationListCallback, ecb cfac.ErrorCallback) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}

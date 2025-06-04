@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package apag
 
 import (
@@ -24,7 +27,7 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback
 	c.OnResponse(func(r *colly.Response) {
 		defer wg.Done()
 
-		var re = regexp.MustCompile(`(?m)var houses = (.*);$`)
+		re := regexp.MustCompile(`(?m)var houses = (.*);$`)
 
 		m := re.FindSubmatch(r.Body)
 		if m == nil {
@@ -44,7 +47,7 @@ func FetchAllHouses(c *colly.Collector, cb func([]House), ecb cfac.ErrorCallback
 			return
 		}
 
-		var houses = []House{}
+		houses := []House{}
 		for _, h := range houseMap {
 			h.Stats = nil
 			houses = append(houses, h)

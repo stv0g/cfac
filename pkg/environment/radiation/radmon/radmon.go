@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package radmon
 
 import (
@@ -18,12 +21,10 @@ const (
 	UrlApi = "https://radmon.org/radmon.php" // + ?function=showuserpage&user= oder ?function=lastreading
 )
 
-var (
-	Users []string = []string{
-		"Rotter",
-		"jokri",
-	}
-)
+var Users []string = []string{
+	"Rotter",
+	"jokri",
+}
 
 var re = regexp.MustCompile(`(?m)(\d+) CPM on (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})UTC at ([^<]*)`)
 

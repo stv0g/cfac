@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package mcfit
 
 // https://github.com/vaaski/openmagicline
@@ -19,9 +22,7 @@ const (
 	UrlOccupancy = "https://www.mcfit.com/de/auslastung/antwort/request.json" // + "?tx_brastudioprofilesmcfitcom_brastudioprofiles%5BstudioId%5D=1536269110"
 )
 
-var (
-	StudioIDs = []int{1536266890, 1536269110}
-)
+var StudioIDs = []int{1536266890, 1536269110}
 
 func (s *Studio) DistanceTo(to cfac.Coordinate) float64 {
 	loc := cfac.Coordinate{

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -31,7 +34,6 @@ func (i *RoadList) Set(value string) error {
 }
 
 func getLivestreamWebcams(road autobahn.Road) ([]autobahn.Webcam, error) {
-
 	livestreamWebcams := []autobahn.Webcam{}
 
 	webcams, err := autobahn.GetWebcams(road)
@@ -78,9 +80,10 @@ func writeM3U8Playlist(w io.Writer, road autobahn.Road, cams []autobahn.Webcam) 
 // See also: https://www.wowza.com/docs/about-playing-wowza-streaming-engine-streams
 //
 // Example:
-//   Original: https://www.blitzvideoserver.de/player_strassennrw.html?serverip=62.113.210.7&serverapp=strassennrw-rtplive&streamname=10107886632285296527
-//      RTSP: rtsp://62.113.210.7/strassennrw-rtplive/10107898794605103925.stream
-//      HLS: http://62.113.210.7/strassennrw-rtplive/10107898794605103925.stream/playlist.m3u8
+//
+//	Original: https://www.blitzvideoserver.de/player_strassennrw.html?serverip=62.113.210.7&serverapp=strassennrw-rtplive&streamname=10107886632285296527
+//	   RTSP: rtsp://62.113.210.7/strassennrw-rtplive/10107898794605103925.stream
+//	   HLS: http://62.113.210.7/strassennrw-rtplive/10107898794605103925.stream/playlist.m3u8
 func transformLinkURL(u string) (string, error) {
 	m, err := url.Parse(u)
 	if err != nil {

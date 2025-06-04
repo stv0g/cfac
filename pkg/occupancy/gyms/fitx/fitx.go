@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package fitx
 
 import (
@@ -22,11 +25,9 @@ const (
 	UrlStudioDetail = UrlServices + "/survey/nps_studiodetail_v2"
 )
 
-var (
-	StudioIDs = []int{
-		38, // Aachen Europaplatz
-	}
-)
+var StudioIDs = []int{
+	38, // Aachen Europaplatz
+}
 
 func FetchStudios(c *colly.Collector, coords cfac.Coordinate, cb func(s []Studio), ecb cfac.ErrorCallback) {
 	c.OnResponse(func(r *colly.Response) {

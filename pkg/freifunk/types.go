@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2025 Steffen Vogel <post@steffenvogel.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package freifunk
 
 import (
@@ -156,9 +159,8 @@ type NodeInfoSoftware struct {
 		Version string `json:"version"`
 		Compat  int    `json:"compat"`
 	} `json:"batman-adv"`
-	Babeld struct {
-	} `json:"babeld"`
-	Fastd struct {
+	Babeld struct{} `json:"babeld"`
+	Fastd  struct {
 		Enabled bool   `json:"enabled"`
 		Version string `json:"version"`
 	} `json:"fastd"`
