@@ -27,6 +27,7 @@
       {
         packages = {
           default = pkgs.cfac;
+          inherit (pkgs) cfac;
         };
 
         devShell = pkgs.mkShell {

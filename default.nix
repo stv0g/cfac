@@ -7,8 +7,11 @@
   opencv,
 }:
 buildGo124Module {
-  name = "cfac";
+  pname = "cfac";
+  version = "0.1.0";
+
   src = ./.;
+
   vendorHash = "sha256-9hKXF3U0eUsy+cPUzR51vs3tnIYV7yPxV8D/DBIuHXQ=";
 
   nativeBuildInputs = [
