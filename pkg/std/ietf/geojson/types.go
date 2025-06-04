@@ -22,8 +22,8 @@ type Object struct {
 type Geometry struct {
 	Object
 
-	Coordinates []Coordinate `json:"coordinates,omitempty"`
-	Geometries  []*Geometry  `json:"geometries,omitempty"`
+	Coordinates Coordinate  `json:"coordinates,omitempty"`
+	Geometries  []*Geometry `json:"geometries,omitempty"`
 }
 
 // A Feature corresponds to GeoJSON feature object
@@ -46,4 +46,9 @@ type CRS struct {
 	Properties struct {
 		Name string `json:"name"`
 	} `json:"properties"`
+}
+
+type Polygon struct {
+	Type        string         `json:"type"`
+	Coordinates [][]Coordinate `json:"coordinates"`
 }

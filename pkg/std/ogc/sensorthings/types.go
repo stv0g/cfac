@@ -76,7 +76,7 @@ type Location struct {
 	EncodingType string `json:"encodingType"`
 
 	// The location type is defined by encodingType.
-	Location geojson.Location `json:"location"`
+	Location any `json:"location"`
 
 	// A JSON Object containing user-annotated properties as key-value pairs.
 	Properties Properties `json:"properties"`
