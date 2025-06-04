@@ -9,7 +9,7 @@
 buildGo124Module {
   name = "cfac";
   src = ./.;
-  vendorHash = "sha256-TBIq7amF2pf1lWsGSXwxcCmj36mhfDs7tbB/pnyJ52s=";
+  vendorHash = "sha256-9hKXF3U0eUsy+cPUzR51vs3tnIYV7yPxV8D/DBIuHXQ=";
 
   nativeBuildInputs = [
     pkg-config
