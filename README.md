@@ -7,7 +7,19 @@
 [![GitHub](https://img.shields.io/github/license/stv0g/cfac)](https://github.com/stv0g/cfac/blob/master/LICENSE)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/stv0g/cfac)
 
-_cfac_ is a Go package for accessing various real-time data sources and APIs in the [city of Aachen](https://aachen.de/).
+_cfac_ is a Go package for accessing various real-time data sources and APIs in the [city of Aachen](https://aachen.de/) and [the Eifel](https://de.wikipedia.org/wiki/Eifel).
+
+## Usage
+
+### OParl Scraper
+
+_cfac_ includes a command line program to scrap information from council information systems (Ratsinformationssysteme) via the [OParl API](https://oparl.org/).
+
+Fetched data is stored in a file hierarchy consisting of JSON files and associated papers mostly in PDF format.
+
+```shell
+go run github.com/stv0g/cfac/cmd/scraper_oparl
+```
 
 ## Disclaimer
 
@@ -105,12 +117,11 @@ _cfac_ accesses data from various sources by the means of web-scraping and undoc
 
 ## Roadmap: future ideas
 
-- [Ratsinformations System Aachen](https://ratsinfo.aachen.de/bi/oparl/1.0/bodies.asp?id=1)
-  - Statistiken..
+- [Ratsinformations Systeme via OParl](https://oparl.org/)
 
 ### Opening hours
 
-- Lieferando:
+- Lieferando
 - Lieferheld
   - [API example](https://github.com/kenodressel/lieferheld-api/blob/master/info-api.js)
 
