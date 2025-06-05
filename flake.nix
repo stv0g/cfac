@@ -3,6 +3,11 @@
 {
   description = "Code for Aachen";
 
+  nixConfig = {
+    extra-substituters = "https://stv0g.cachix.org";
+    extra-trusted-public-keys = "stv0g.cachix.org-1:Bliox3TtWqQhKr2w6HMSbpwn9E9M2vgKmA/N7VpYOmY=";
+  };
+
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
