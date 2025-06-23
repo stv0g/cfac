@@ -33,7 +33,7 @@ services:
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: admin1234
 
   telegraf:
-    image: telegraf:1.34
+    image: telegraf:1.35
     volumes:
     - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
