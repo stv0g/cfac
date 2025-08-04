@@ -14,7 +14,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/streadway/amqp v1.1.0
-	gocv.io/x/gocv v0.41.0
+	gocv.io/x/gocv v0.42.0
 	golang.org/x/text v0.27.0
 )
 
