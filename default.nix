@@ -12,7 +12,7 @@ buildGo124Module {
 
   src = ./.;
 
-  vendorHash = "sha256-FX0gv8W5wZYelkN6gjwRaMNx7vD+QmPBI7AUWQJf5Vs=";
+  vendorHash = "sha256-/kGXDoAaSRLu/MPAAeJ5+h7OXzH6s/LuZ2dscxxZDYo=";
 
   nativeBuildInputs = [
     pkg-config
