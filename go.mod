@@ -5,7 +5,7 @@ module github.com/stv0g/cfac
 
 go 1.23.0
 
-toolchain go1.25.0
+toolchain go1.25.1
 
 require (
 	github.com/gocolly/colly/v2 v2.2.0
