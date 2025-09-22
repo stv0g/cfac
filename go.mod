@@ -3,7 +3,7 @@
 
 module github.com/stv0g/cfac
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.25.1
 
@@ -15,7 +15,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/streadway/amqp v1.1.0
 	gocv.io/x/gocv v0.42.0
-	golang.org/x/text v0.28.0
+	golang.org/x/text v0.29.0
 )
 
 require (
